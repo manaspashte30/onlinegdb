@@ -1662,10 +1662,9 @@ window.addEventListener('mousemove',e=>{
 });
 window.addEventListener('mouseup',()=>{dr=false;document.body.style.userSelect='';});
 
-/* max height = workspace height minus toolbar rows minus resizer */
 function maxPanelHeight(){
-  const mainArea=document.querySelector('.main-area');
-  return mainArea.offsetHeight - 20 - 10; /* leave tiny sliver for resizer+editor */
+  const ws=document.querySelector('.workspace');
+  return ws.offsetHeight - 20 - 10;
 }
 
 let expanded=false;
@@ -1676,9 +1675,8 @@ function togglePanel(e){
   const btn=document.getElementById('toggleBtn');
   op.style.transition='height .3s cubic-bezier(.4,0,.2,1)';
   if(!expanded){
-    /* expand: fill up to just below the two toolbars */
-    const mainArea=document.querySelector('.main-area');
-    const bigH=mainArea.offsetHeight-24; /* 24px = leave resizer visible */
+    const ws=document.querySelector('.workspace');
+    const bigH=ws.offsetHeight - 24;
     op.style.height=bigH+'px';
     btn.innerHTML='&#9660;';
     expanded=true;
@@ -1691,8 +1689,8 @@ function togglePanel(e){
 
 function updateToggleBtn(h){
   const btn=document.getElementById('toggleBtn');
-  const mainArea=document.querySelector('.main-area');
-  const bigH=mainArea.offsetHeight-24;
+  const ws=document.querySelector('.workspace');
+  const bigH=ws.offsetHeight-24;
   if(h>=bigH-10){
     expanded=true;btn.innerHTML='&#9660;';
   } else {
