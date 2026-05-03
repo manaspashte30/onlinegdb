@@ -1,451 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>GDB online Debugger | Compiler - Code, Compile, Run, Debug online C, C++</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background:#fff;}
+html,body{height:100%;overflow:hidden;font-family:'Roboto',Arial,sans-serif;font-size:14px;}
 
-/* ─── LOGIN OVERLAY ─── */
+/* ═══════════════════════════════
+   LOGIN OVERLAY
+═══════════════════════════════ */
 #loginOverlay{
   position:fixed;inset:0;z-index:9999;
-  background:#1a1a2e;
+  background:#0d1b2a;
   display:flex;align-items:center;justify-content:center;
-  flex-direction:column;
 }
 .login-box{
-  background:#16213e;
-  border:1px solid #0f3460;
-  border-radius:8px;
-  padding:40px 44px 36px;
-  width:360px;
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
-  display:flex;flex-direction:column;align-items:center;gap:0;
+  background:#125792;border:1px solid #1a6fac;border-radius:6px;
+  padding:36px 44px 32px;width:360px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;align-items:center;
 }
 .login-logo{
-  font-size:26px;font-weight:700;color:#fff;
-  margin-bottom:4px;letter-spacing:-.5px;
-}
-.login-logo span{color:#e91e63;font-weight:300;}
-.login-sub{
-  font-size:12px;color:#7f8fa6;margin-bottom:28px;
-  font-family:'Source Code Pro',monospace;letter-spacing:.04em;
-}
-.login-label{
-  width:100%;font-size:11.5px;color:#90a4ae;
-  margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;
-}
-.login-input{
-  width:100%;height:40px;background:#0f3460;
-  border:1px solid #1a4a8a;border-radius:4px;
-  color:#e0e0e0;font-size:14px;font-family:'Source Code Pro',monospace;
-  padding:0 14px;outline:none;margin-bottom:16px;
-  transition:border .2s,box-shadow .2s;
-}
-.login-input:focus{
-  border-color:#e91e63;
-  box-shadow:0 0 0 3px rgba(233,30,99,.15);
-}
-.login-input.error{
-  border-color:#ef5350;
-  animation:shake .35s ease;
-}
-@keyframes shake{
-  0%,100%{transform:translateX(0)}
-  20%{transform:translateX(-8px)}
-  40%{transform:translateX(8px)}
-  60%{transform:translateX(-6px)}
-  80%{transform:translateX(6px)}
-}
-.login-btn{
-  width:100%;height:40px;background:#e91e63;border:none;
-  border-radius:4px;color:#fff;font-size:14px;font-weight:500;
-  font-family:'Roboto',sans-serif;cursor:pointer;
-  transition:background .2s,transform .1s;margin-top:4px;
-  letter-spacing:.03em;
-}
-.login-btn:hover{background:#c2185b;}
-.login-btn:active{transform:scale(.98);}
-.login-error{
-  font-size:12px;color:#ef5350;margin-top:12px;
-  text-align:center;height:16px;font-family:'Source Code Pro',monospace;
-}
-.login-hint{
-  font-size:11px;color:#37474f;margin-top:20px;
-  font-family:'Source Code Pro',monospace;text-align:center;
-}
-
-/* unlock animation */
-@keyframes unlockFade{
-  0%{opacity:1;transform:scale(1);}
-  60%{opacity:1;transform:scale(1.04);}
-  100%{opacity:0;transform:scale(.96);pointer-events:none;}
-}
-.unlocking{animation:unlockFade .5s ease forwards;}
-
-/* ─── TOP MENU BAR ─── */
-.topbar{
-  height:32px;background:#f5f5f5;border-bottom:1px solid #ddd;
-  display:flex;align-items:center;padding:0;flex-shrink:0;
-  font-size:13px;color:#333;
-}
-.tb-menu-item{display:none;}
-
-.tb-run-group{display:flex;align-items:center;height:100%;margin-left:4px;gap:3px;padding:0 6px;}
-.tb-run{
-  display:flex;align-items:center;gap:4px;
-  padding:3px 12px;border:none;border-radius:2px;
-  font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;
-  cursor:pointer;height:24px;
-}
-.btn-run{background:#4caf50;color:#fff;}
-.btn-run:hover{background:#43a047;}
-.btn-run.running{background:#e53935;animation:blink .6s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.65}}
-.btn-debug{background:#2196f3;color:#fff;}
-.btn-debug:hover{background:#1976d2;}
-.btn-stop{background:#9e9e9e;color:#fff;}
-.btn-stop:hover{background:#757575;}
-
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:0;}
-.tb-right-item{
-  padding:0 12px;height:32px;display:flex;align-items:center;
-  font-size:12px;color:#555;cursor:pointer;border-left:1px solid #e0e0e0;
-}
-.tb-right-item:hover{background:#e8e8e8;}
-.btn-signup-top{background:#e91e63;color:#fff;border-radius:0;border-left:1px solid #c2185b;}
-.btn-signup-top:hover{background:#c2185b;}
-
-/* ─── SECOND TOOLBAR (language + beautify + share) ─── */
-.toolbar2{
-  height:34px;background:#fafafa;border-bottom:1px solid #e0e0e0;
-  display:flex;align-items:center;padding:0 0 0 4px;flex-shrink:0;gap:4px;
-}
-.t2-btn{
-  display:flex;align-items:center;gap:4px;padding:3px 10px;
-  border:1px solid #ccc;border-radius:2px;background:#fff;
-  font-size:12px;color:#444;cursor:pointer;height:24px;
-  font-family:'Roboto',sans-serif;transition:background .12s;
-}
-.t2-btn:hover{background:#f0f0f0;}
-.t2-select{
-  height:24px;border:1px solid #ccc;border-radius:2px;
-  background:#fff;font-size:12px;color:#333;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
-}
-.t2-filetab{
+  font-size:24px;font-weight:700;color:#fff;margin-bottom:4px;
   display:flex;align-items:center;gap:6px;
-  background:#fff;border:1px solid #ccc;border-bottom:none;
-  padding:3px 12px;font-size:12px;color:#333;
-  border-radius:2px 2px 0 0;cursor:pointer;
-  border-top:2px solid #4caf50;margin-left:4px;
 }
-.t2-prog-select{
-  margin-left:auto;margin-right:6px;
-  height:24px;border:1px solid #ccc;border-radius:2px;
-  background:#fffde7;font-size:11.5px;color:#555;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
-  max-width:260px;
+.login-logo .flash{
+  border:3px solid #fff;padding:4px 6px;font-size:14px;
 }
+.login-sub{font-size:11px;color:#94c5ee;margin-bottom:26px;font-style:italic;}
+.login-label{width:100%;font-size:11px;color:#ccd7dd;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}
+.login-input{
+  width:100%;height:36px;background:#0f3a5f;border:1px solid #1a6fac;
+  border-radius:3px;color:#e0e0e0;font-size:13px;
+  font-family:'Source Code Pro',monospace;padding:0 12px;
+  outline:none;margin-bottom:14px;transition:border .18s,box-shadow .18s;
+}
+.login-input:focus{border-color:#5bc0de;box-shadow:0 0 0 3px rgba(91,192,222,.2);}
+.login-input.shake{animation:shake .35s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.login-btn{
+  width:100%;height:36px;background:#5cb85c;border:1px solid #4cae4c;
+  border-radius:3px;color:#fff;font-size:14px;font-weight:500;
+  font-family:'Roboto',sans-serif;cursor:pointer;margin-top:4px;
+  transition:background .15s;
+}
+.login-btn:hover{background:#449d44;}
+.login-err{font-size:12px;color:#f4a460;margin-top:10px;height:16px;text-align:center;font-family:'Source Code Pro',monospace;}
+.login-hint{font-size:11px;color:#94c5ee;margin-top:16px;font-style:italic;}
+@keyframes fadeOut{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.03)}100%{opacity:0;transform:scale(.97)}}
+.login-out{animation:fadeOut .45s ease forwards;}
 
-/* ─── BODY LAYOUT: left sidebar + editor ─── */
-.body-wrap{
-  flex:1;display:flex;overflow:hidden;min-height:0;
-}
-
-/* ─── LEFT SIDEBAR ─── */
-.sidebar{
-  width:172px;flex-shrink:0;
-  background:#bbdefb;
-  border-right:1px solid #90caf9;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-}
-
-/* logo area inside sidebar */
-.sidebar-logo{
-  background:#1565c0;
-  padding:10px 14px 9px;
-  font-size:15px;font-weight:700;color:#fff;
-  letter-spacing:-.2px;border-bottom:2px solid #0d47a1;
-  flex-shrink:0;
-}
-.sidebar-logo span{color:#90caf9;font-weight:300;}
-
-/* nav items */
-.sidebar-nav{
-  display:flex;flex-direction:column;
-  border-bottom:1px solid #90caf9;
-  flex-shrink:0;
-}
-.sidebar-nav-item{
-  display:flex;align-items:center;gap:9px;
-  padding:9px 14px;font-size:13px;color:#0d47a1;
-  cursor:pointer;border-bottom:1px solid #90caf9;
-  transition:background .13s;font-weight:400;
-  background:#bbdefb;
-}
-.sidebar-nav-item:last-child{border-bottom:none;}
-.sidebar-nav-item:hover{background:#90caf9;}
-.sidebar-nav-item.active{
-  background:#1565c0;color:#fff;font-weight:500;
-}
-.sidebar-nav-item .nav-icon{font-size:14px;width:18px;text-align:center;}
-
-/* files section */
-.sidebar-files-head{
-  padding:6px 14px 4px;font-size:10px;color:#1565c0;
-  font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  background:#bbdefb;border-bottom:1px solid #90caf9;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.sidebar-add{
-  width:16px;height:16px;background:#1565c0;border-radius:2px;
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:13px;cursor:pointer;line-height:1;
-}
-.sidebar-add:hover{background:#0d47a1;}
-.sidebar-file{
-  display:flex;align-items:center;gap:7px;
-  padding:5px 14px;font-size:12px;color:#0d47a1;cursor:pointer;
-  border-bottom:1px solid #bbdefb;transition:background .12s;
-  background:#ddeeff;
-}
-.sidebar-file:hover{background:#90caf9;}
-.sidebar-file.active{background:#1565c0;color:#fff;}
-.file-icon{font-size:12px;color:#1976d2;}
-.sidebar-file.active .file-icon{color:#90caf9;}
-
-/* ─── MAIN EDITOR + OUTPUT ─── */
-.main-area{
-  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;
-}
-
-/* ─── EDITOR ─── */
-.editor-wrap{
-  flex:1;display:flex;overflow:hidden;min-height:0;
-  background:#1e1e1e;
-}
-.line-gutter{
-  background:#1e1e1e;width:44px;flex-shrink:0;
-  border-right:1px solid #2d2d2d;overflow:hidden;
-  padding-top:2px;
-}
-.lnum{
-  height:19px;line-height:19px;text-align:right;padding-right:10px;
-  font-family:'Source Code Pro',monospace;font-size:13px;
-  color:#3d3d3d;user-select:none;
-}
-.code-scroll{
-  flex:1;overflow:auto;background:#1e1e1e;
-}
-.code-scroll::-webkit-scrollbar{width:10px;height:10px;}
-.code-scroll::-webkit-scrollbar-track{background:#1a1a1a;}
-.code-scroll::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
-.code-scroll::-webkit-scrollbar-corner{background:#1a1a1a;}
-.code-inner{padding:2px 0 24px 14px;min-width:max-content;}
-.cl{
-  height:19px;line-height:19px;font-family:'Source Code Pro',monospace;
-  font-size:13px;white-space:pre;display:block;color:#d4d4d4;
-}
-.cl:hover{background:rgba(255,255,255,.03);}
-
-/* syntax */
-.kw{color:#569cd6;}
-.pp{color:#c586c0;}
-.fn{color:#dcdcaa;}
-.str{color:#ce9178;}
-.num{color:#b5cea8;}
-.cmt{color:#6a9955;font-style:italic;}
-.mac{color:#9cdcfe;}
-.ty{color:#4ec9b0;}
-
-/* ─── RESIZE HANDLE ─── */
-.resizer{
-  height:20px;background:#d6d6d6;cursor:row-resize;flex-shrink:0;
-  border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.resizer-grip{color:#aaa;font-size:9px;letter-spacing:3px;}
-.resizer-toggle{
-  position:absolute;left:8px;top:50%;transform:translateY(-50%);
-  width:22px;height:16px;background:#9e9e9e;border:none;border-radius:3px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  gap:4px;font-size:10px;color:#fff;font-family:'Roboto',sans-serif;
-  font-weight:500;transition:background .15s;user-select:none;letter-spacing:.02em;
-}
-.resizer-toggle:hover{background:#607d8b;}
-
-/* ─── OUTPUT PANEL ─── */
-.output-panel{
-  height:220px;flex-shrink:0;display:flex;flex-direction:column;
-  background:#1a1a1a;
-}
-.out-tabs{
-  background:#252526;border-bottom:1px solid #333;
-  display:flex;flex-shrink:0;
-}
-.out-tab{
-  padding:5px 16px;font-size:12.5px;color:#888;cursor:pointer;
-  border-right:1px solid #333;transition:all .12s;
-}
-.out-tab:hover{color:#bbb;background:rgba(255,255,255,.04);}
-.out-tab.active{color:#4caf50;border-bottom:2px solid #4caf50;background:rgba(76,175,80,.06);}
-
-.stdin-strip{
-  background:#1e1e1e;padding:3px 12px;display:flex;align-items:center;
-  gap:14px;flex-shrink:0;border-bottom:1px solid #2d2d2d;
-}
-.stdin-strip label{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#888;}
-.stdin-strip input[type=radio]{accent-color:#4caf50;cursor:pointer;}
-
-.output-body{
-  flex:1;overflow-y:auto;padding:6px 14px;
-  font-family:'Source Code Pro',monospace;font-size:13.5px;
-  line-height:1.6;color:#ccc;
-}
-.output-body::-webkit-scrollbar{width:8px;}
-.output-body::-webkit-scrollbar-track{background:#111;}
-.output-body::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:4px;}
-.ol{display:block;white-space:pre-wrap;}
-.o-info{color:#546e7a;font-style:italic;}
-.o-prompt{color:#4caf50;}
-.o-input{color:#64b5f6;}
-.o-err{color:#ef5350;}
-
-/* ─── PAGE ─── */
+/* ═══════════════════════════════
+   OUTER WRAPPER
+═══════════════════════════════ */
 .page{height:100vh;display:flex;flex-direction:row;overflow:hidden;}
 
-/* ─── LEFT SIDEBAR ─── full height ─── */
-.sidebar{
-  width:168px;flex-shrink:0;
-  background:#bbdefb;
-  border-right:2px solid #64b5f6;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-  height:100vh;
-  z-index:10;
+/* ═══════════════════════════════
+   LEFT SIDEBAR  — #125792 blue
+═══════════════════════════════ */
+#left-component{
+  width:190px;flex-shrink:0;background:#125792;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;color:#fff;
+  border-right:2px solid #0f3a5f;
 }
-.sidebar-logo{
-  background:#1565c0;
-  padding:9px 14px 8px;
-  font-size:15px;font-weight:700;color:#fff;
-  letter-spacing:-.2px;border-bottom:2px solid #0d47a1;
-  flex-shrink:0;height:32px;display:flex;align-items:center;
-}
-.sidebar-logo span{color:#90caf9;font-weight:300;}
 
-.sidebar-nav{
-  display:flex;flex-direction:column;
-  flex-shrink:0;
+/* fold arrow */
+.fold-btn{
+  position:absolute;right:0;top:0;
+  background:#0f3a5f;border:none;cursor:pointer;
+  color:#94c5ee;padding:14px 5px;font-size:13px;
+  line-height:1;z-index:5;
 }
-.sidebar-nav-item{
-  display:flex;align-items:center;gap:9px;
-  padding:9px 14px;font-size:13px;color:#0d47a1;
-  cursor:pointer;border-bottom:1px solid #90caf9;
-  transition:background .13s;font-weight:400;
-  background:#bbdefb;
-}
-.sidebar-nav-item:hover{background:#90caf9;}
-.sidebar-nav-item.active{background:#1565c0;color:#fff;font-weight:500;}
-.sidebar-nav-item .nav-icon{font-size:14px;width:18px;text-align:center;}
+.fold-btn:hover{background:#0a2a45;color:#fff;}
 
-/* scratch file entry */
-.sidebar-scratch{
-  margin-top:auto;padding:10px 14px;
-  border-top:1px solid #90caf9;background:#bbdefb;
-  flex-shrink:0;
+/* header / logo */
+.sidebar-header{
+  background:#125792;padding:10px 0 0 0;text-align:center;
 }
+.sidebar-logo-link{
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;color:#fff;text-decoration:none;padding:0 24px 8px;
+}
+.sidebar-flash{
+  border:3px solid #fff;padding:5px 8px;font-size:16px;display:inline-block;
+}
+.sidebar-logo-text{font-size:17px;font-weight:700;letter-spacing:.5px;}
+.sidebar-tagline{
+  font-size:10px;color:#ccd7dd;font-style:italic;
+  padding:4px 10px 8px;border-top:1px solid #1a6fac;border-bottom:1px solid #1a6fac;
+  text-align:center;background:#125792;
+}
+.sidebar-motto{
+  font-size:11px;color:#ccd7dd;font-style:italic;
+  padding:6px 8px;border-bottom:1px solid #1a6fac;
+  text-align:center;
+}
+
+/* nav list */
+.sidebar-nav{list-style:none;background:#337ab7;border-bottom:1px solid #1a6fac;}
+.sidebar-nav li{border-bottom:1px solid #1a6fac;}
+.sidebar-nav li a{
+  display:block;padding:9px 18px;color:#fff;text-decoration:none;
+  font-size:13px;transition:background .14s;
+}
+.sidebar-nav li a:hover{background:#286090;color:#fff;}
+.sidebar-nav li.active a{background:#0f3a5f;color:#fff;font-weight:500;}
+.sidebar-nav .label-danger{background:#d9534f;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;}
+
+/* scratch file */
+.sidebar-scratch-area{padding:10px;border-top:1px solid #1a6fac;margin-top:auto;}
 .scratch-btn{
-  width:100%;padding:6px 10px;background:#1565c0;border:none;
-  border-radius:3px;color:#fff;font-size:12px;font-family:'Roboto',sans-serif;
-  cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;
+  width:100%;padding:6px 10px;background:#0f3a5f;border:1px solid #1a6fac;
+  border-radius:3px;color:#94c5ee;font-size:12px;font-family:'Roboto',sans-serif;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;
 }
-.scratch-btn:hover{background:#0d47a1;}
+.scratch-btn:hover{background:#125792;color:#fff;border-color:#5bc0de;}
 
-/* ─── RIGHT COLUMN (topbars + workspace) ─── */
-.right-col{
-  flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;
+/* footer */
+.sidebar-footer{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:6px 6px 4px;background:#0f3a5f;
+  border-top:1px solid #1a6fac;
 }
+.sidebar-footer a{
+  color:#94c5ee;font-size:10px;text-decoration:none;
+  display:inline;line-height:1.8;
+}
+.sidebar-footer a:hover{color:#fff;text-decoration:underline;}
+.sidebar-footer .copyright{color:#7a9ab0;font-size:10px;text-align:center;display:block;margin-top:2px;}
 
-/* ─── TOP MENU BAR ─── */
-.topbar{
-  height:32px;background:#f5f5f5;border-bottom:1px solid #ddd;
-  display:flex;align-items:center;padding:0;flex-shrink:0;
-  font-size:13px;color:#333;
-}
-.tb-run-group{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  height:100%;gap:5px;
-}
-.tb-run{
-  display:flex;align-items:center;gap:4px;
-  padding:3px 14px;border:none;border-radius:2px;
-  font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;
-  cursor:pointer;height:24px;
-}
-.btn-run{background:#4caf50;color:#fff;}
-.btn-run:hover{background:#43a047;}
-.btn-run.running{background:#e53935;animation:blink .6s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.65}}
-.btn-debug{background:#2196f3;color:#fff;}
-.btn-debug:hover{background:#1976d2;}
-.btn-stop{background:#9e9e9e;color:#fff;}
-.btn-stop:hover{background:#757575;}
-
-.tb-right{display:flex;align-items:center;gap:0;flex-shrink:0;}
-.tb-right-item{
-  padding:0 12px;height:32px;display:flex;align-items:center;
-  font-size:12px;color:#555;cursor:pointer;border-left:1px solid #e0e0e0;
-}
-.tb-right-item:hover{background:#e8e8e8;}
-.btn-signup-top{background:#e91e63;color:#fff;border-left:1px solid #c2185b;}
-.btn-signup-top:hover{background:#c2185b;}
-
-/* ─── SECOND TOOLBAR ─── */
-.toolbar2{
-  height:34px;background:#fafafa;border-bottom:1px solid #e0e0e0;
-  display:flex;align-items:center;padding:0 0 0 4px;flex-shrink:0;gap:4px;
-}
-.t2-btn{
-  display:flex;align-items:center;gap:4px;padding:3px 10px;
-  border:1px solid #ccc;border-radius:2px;background:#fff;
-  font-size:12px;color:#444;cursor:pointer;height:24px;
-  font-family:'Roboto',sans-serif;transition:background .12s;
-}
-.t2-btn:hover{background:#f0f0f0;}
-.t2-select{
-  height:24px;border:1px solid #ccc;border-radius:2px;
-  background:#fff;font-size:12px;color:#333;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
-}
-.t2-filetab{
-  display:flex;align-items:center;gap:6px;
-  background:#fff;border:1px solid #ccc;border-bottom:none;
-  padding:3px 12px;font-size:12px;color:#333;
-  border-radius:2px 2px 0 0;cursor:pointer;
-  border-top:2px solid #4caf50;margin-left:4px;
-}
-.t2-prog-select{
-  margin-left:auto;margin-right:6px;
-  height:24px;border:1px solid #ccc;border-radius:2px;
-  background:#fffde7;font-size:11.5px;color:#555;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
-  max-width:260px;
+/* ═══════════════════════════════
+   RIGHT COLUMN
+═══════════════════════════════ */
+#right-component{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+  background:#f5f5f5;min-width:0;
 }
 
-/* ─── WORKSPACE (editor + output) ─── */
-.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+/* ── TITLE BAR (Run/Debug/Stop + language) ── */
+#title-bar{
+  background:#f5f5f5;border-bottom:1px solid #ddd;
+  padding:5px 8px;display:flex;align-items:center;
+  flex-wrap:wrap;gap:4px;flex-shrink:0;min-height:42px;
+}
 
-/* ─── EDITOR ─── */
+/* button groups */
+.btn-group{display:inline-flex;position:relative;}
+.btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 10px;font-size:13px;font-family:'Roboto',sans-serif;
+  border-radius:3px;border:1px solid transparent;cursor:pointer;
+  font-weight:400;transition:all .15s;white-space:nowrap;height:30px;
+}
+.btn-success{background:#5cb85c;border-color:#4cae4c;color:#fff;}
+.btn-success:hover{background:#449d44;}
+.btn-success.running{background:#c9302c;border-color:#ac2925;animation:blink .6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.7}}
+.btn-primary{background:#337ab7;border-color:#2e6da4;color:#fff;}
+.btn-primary:hover{background:#286090;}
+.btn-danger{background:#d9534f;border-color:#d43f3a;color:#fff;}
+.btn-danger:hover{background:#c9302c;}
+.btn-warning{background:#f0ad4e;border-color:#eea236;color:#fff;}
+.btn-warning:hover{background:#ec971f;}
+.btn-info{background:#5bc0de;border-color:#46b8da;color:#fff;}
+.btn-info:hover{background:#31b0d5;}
+.btn-default{background:#fff;border-color:#ccc;color:#333;}
+.btn-default:hover{background:#e6e6e6;}
+.btn-half{padding:5px 7px;border-radius:0;}
+.btn-group .btn:first-child{border-radius:3px 0 0 3px;}
+.btn-group .btn:last-child{border-radius:0 3px 3px 0;}
+.btn-group .btn:only-child{border-radius:3px;}
+.btn[disabled]{opacity:.65;cursor:not-allowed;}
+
+/* language select + settings */
+.lang-area{margin-left:auto;display:flex;align-items:center;gap:5px;}
+.lang-label{font-size:13px;color:#555;}
+#lang-select{
+  height:30px;border:1px solid #ccc;border-radius:0;
+  background:#fff;font-size:13px;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;width:95px;
+}
+
+/* prog selector */
+.prog-select-wrap{display:flex;align-items:center;gap:6px;margin-left:6px;}
+#progSel{
+  height:28px;border:1px solid #ccc;border-radius:3px;
+  background:#fffde7;font-size:12px;color:#555;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;max-width:240px;
+}
+
+/* ── FILE TABS ── */
+#file-tabs-bar{
+  background:#757575;display:flex;align-items:flex-end;
+  padding:0 0 0 4px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;
+  min-height:30px;
+}
+#file-tabs-bar::-webkit-scrollbar{display:none;}
+.file-tab{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px 5px;background:#9e9e9e;border-radius:3px 3px 0 0;
+  font-size:12.5px;color:#fff;cursor:pointer;border:1px solid #757575;
+  border-bottom:none;margin-right:2px;transition:background .12s;
+  white-space:nowrap;min-height:28px;
+}
+.file-tab.active{background:#f5f5f5;color:#333;border-color:#aaa;}
+.file-tab:hover:not(.active){background:#8d8d8d;}
+
+/* ── TOP COMPONENT (editor area) ── */
+#top-component{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;
+  position:relative;background:#f5f5f5;
+}
+
+/* ── EDITOR ── */
 .editor-wrap{
-  flex:1;display:flex;overflow:hidden;min-height:0;
-  background:#1e1e1e;
+  flex:1;display:flex;overflow:hidden;min-height:0;background:#1e1e1e;
 }
 .line-gutter{
   background:#1e1e1e;width:44px;flex-shrink:0;
@@ -464,204 +236,300 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
 .code-inner{padding:2px 0 24px 14px;min-width:max-content;}
 .cl{height:19px;line-height:19px;font-family:'Source Code Pro',monospace;font-size:13px;white-space:pre;display:block;color:#d4d4d4;}
 .cl:hover{background:rgba(255,255,255,.03);}
+/* syntax */
+.kw{color:#569cd6;}.pp{color:#c586c0;}.fn{color:#dcdcaa;}
+.str{color:#ce9178;}.num{color:#b5cea8;}.cmt{color:#6a9955;font-style:italic;}.mac{color:#9cdcfe;}
 
-/* editable scratch area */
+/* scratch editor */
 .scratch-editor{
-  display:none;
-  flex:1;
-  overflow:auto;
-  background:#1e1e1e;
+  display:none;flex:1;overflow:auto;background:#1e1e1e;
   font-family:'Source Code Pro',monospace;font-size:13px;
-  color:#d4d4d4;padding:8px 14px;outline:none;
+  color:#d4d4d4;padding:6px 14px;outline:none;
   line-height:19px;white-space:pre;caret-color:#fff;
   border:none;resize:none;width:100%;min-height:0;
-  box-sizing:border-box;
 }
 .scratch-editor::-webkit-scrollbar{width:10px;}
 .scratch-editor::-webkit-scrollbar-track{background:#1a1a1a;}
 .scratch-editor::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
 
-/* syntax colors */
-.kw{color:#569cd6;}.pp{color:#c586c0;}.fn{color:#dcdcaa;}
-.str{color:#ce9178;}.num{color:#b5cea8;}.cmt{color:#6a9955;font-style:italic;}.mac{color:#9cdcfe;}
-
-/* ─── RESIZER ─── */
-.resizer{
-  height:20px;background:#d6d6d6;cursor:row-resize;flex-shrink:0;
-  border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd;
+/* ── DIVIDER / RESIZER ── */
+#my-divider1{
+  height:7px;background:#bdbdbd;cursor:row-resize;flex-shrink:0;
+  border-top:1px solid #aaa;border-bottom:1px solid #aaa;
   display:flex;align-items:center;justify-content:center;position:relative;
 }
-.resizer-grip{color:#aaa;font-size:9px;letter-spacing:3px;}
+.resizer-grip{color:#999;font-size:9px;letter-spacing:3px;}
 .resizer-toggle{
   position:absolute;left:8px;top:50%;transform:translateY(-50%);
   width:22px;height:16px;background:#9e9e9e;border:none;border-radius:3px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:10px;color:#fff;transition:background .15s;user-select:none;
+  font-size:10px;color:#fff;transition:background .15s;
 }
 .resizer-toggle:hover{background:#607d8b;}
 
-/* ─── OUTPUT PANEL ─── */
-.output-panel{height:220px;flex-shrink:0;display:flex;flex-direction:column;background:#1a1a1a;}
-.out-tabs{background:#252526;border-bottom:1px solid #333;display:flex;flex-shrink:0;}
-.out-tab{padding:5px 16px;font-size:12.5px;color:#888;cursor:pointer;border-right:1px solid #333;transition:all .12s;}
-.out-tab:hover{color:#bbb;background:rgba(255,255,255,.04);}
-.out-tab.active{color:#4caf50;border-bottom:2px solid #4caf50;background:rgba(76,175,80,.06);}
-.stdin-strip{background:#1e1e1e;padding:3px 12px;display:flex;align-items:center;gap:14px;flex-shrink:0;border-bottom:1px solid #2d2d2d;}
-.stdin-strip label{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#888;}
-.stdin-strip input[type=radio]{accent-color:#4caf50;cursor:pointer;}
-.output-body{flex:1;overflow-y:auto;padding:6px 14px;font-family:'Source Code Pro',monospace;font-size:13.5px;line-height:1.6;color:#ccc;}
-.output-body::-webkit-scrollbar{width:8px;}
-.output-body::-webkit-scrollbar-track{background:#111;}
-.output-body::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:4px;}
-.ol{display:block;white-space:pre-wrap;}
-.o-info{color:#546e7a;font-style:italic;}.o-prompt{color:#4caf50;}.o-input{color:#64b5f6;}.o-err{color:#ef5350;}
+/* ── BOTTOM PANEL ── */
+#bottom-component{
+  height:230px;flex-shrink:0;display:flex;flex-direction:column;
+  background:#f5f5f5;
+}
+#input_output_pan{display:flex;flex-direction:column;height:100%;}
 
-/* ─── STATUS BAR ─── */
-.statusbar{height:22px;background:#007acc;display:flex;align-items:center;padding:0 12px;gap:14px;flex-shrink:0;}
-.st{font-size:11.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:4px;}
-.st-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;}
-.st-sep{color:rgba(255,255,255,.3);}
+/* pan control buttons */
+.pan_control_button_bar{
+  background:#e0e0e0;border-bottom:1px solid #ccc;padding:3px 6px;
+  display:flex;align-items:center;gap:4px;flex-shrink:0;
+}
+.ctrl-btn{
+  background:#fff;border:1px solid #ccc;border-radius:3px;
+  padding:3px 7px;cursor:pointer;font-size:12px;color:#555;
+  transition:background .12s;
+}
+.ctrl-btn:hover{background:#e6e6e6;color:#333;}
+
+/* console tabs */
+#console-title-bar{background:#f5f5f5;border-bottom:1px solid #ddd;flex-shrink:0;}
+.console-tabs{display:flex;list-style:none;padding:0;margin:0;}
+.console-tab{
+  padding:6px 16px;font-size:13px;color:#777;cursor:pointer;
+  border-right:1px solid #ddd;border-bottom:2px solid transparent;
+  transition:all .12s;
+}
+.console-tab:hover{color:#333;background:#e8e8e8;}
+.console-tab.active{color:#337ab7;border-bottom:2px solid #337ab7;background:#fff;font-weight:500;}
+
+/* stdin area */
+.stdin-area{
+  flex:1;overflow:hidden;padding:8px 10px;background:#fff;
+  display:flex;flex-direction:column;gap:6px;font-size:13px;
+}
+.stdin-radio-row{display:flex;align-items:center;gap:16px;color:#555;}
+.stdin-radio-row label{display:flex;align-items:center;gap:5px;cursor:pointer;}
+.stdin-radio-row input[type=radio]{accent-color:#337ab7;cursor:pointer;}
+
+/* output area */
+.output-area{
+  flex:1;overflow-y:auto;background:#fff;padding:6px 10px;
+  font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.6;color:#333;
+  display:none;
+}
+.output-area::-webkit-scrollbar{width:8px;}
+.output-area::-webkit-scrollbar-track{background:#f0f0f0;}
+.output-area::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
+.ol{display:block;white-space:pre-wrap;}
+.o-info{color:#777;font-style:italic;}.o-prompt{color:#2e7d32;font-weight:500;}
+.o-input{color:#1565c0;}.o-err{color:#c62828;}
 </style>
 </head>
 <body>
-<!-- ─── LOGIN OVERLAY ─── -->
+
+<!-- ═══ LOGIN OVERLAY ═══ -->
 <div id="loginOverlay">
   <div class="login-box">
-    <div class="login-logo">GDB<span>online</span></div>
-    <div class="login-sub">// secure access required</div>
+    <div class="login-logo">
+      <span class="flash">&#9889;</span> OnlineGDB
+    </div>
+    <div class="login-sub">online compiler and debugger for c/c++</div>
     <div class="login-label">Username</div>
-    <input class="login-input" id="loginUser" type="text" placeholder="enter username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="login-input" id="loginUser" type="text" placeholder="username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
     <div class="login-label">Password</div>
-    <input class="login-input" id="loginPass" type="password" placeholder="enter password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">Unlock IDE</button>
-    <div class="login-error" id="loginErr"></div>
+    <input class="login-input" id="loginPass" type="password" placeholder="password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">&#9654; Login</button>
+    <div class="login-err" id="loginErr"></div>
     <div class="login-hint">hint: owner of the website</div>
   </div>
 </div>
 
+<!-- ═══ MAIN PAGE ═══ -->
 <div class="page">
 
-  <!-- ═══ LEFT SIDEBAR — full height ═══ -->
-  <div class="sidebar">
-    <div class="sidebar-logo">GDB<span>online</span></div>
-    <div class="sidebar-nav">
-      <div class="sidebar-nav-item active"  onclick="navClick(this)"><span class="nav-icon">&#9998;</span> Editor</div>
-      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#128193;</span> My Projects</div>
-      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#127979;</span> Classroom</div>
-      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#128214;</span> Learn</div>
-      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#10067;</span> Questions</div>
+  <!-- ═══ LEFT SIDEBAR ═══ -->
+  <div id="left-component">
+    <button class="fold-btn" onclick="toggleSidebar()">&#10094;</button>
+
+    <div class="sidebar-header">
+      <div class="sidebar-logo-link">
+        <span class="sidebar-flash">&#9889;</span>
+        <span class="sidebar-logo-text">OnlineGDB</span>
+      </div>
+      <div class="sidebar-tagline">online compiler and debugger for c/c++</div>
+      <div class="sidebar-motto">code. compile. run. debug. share.</div>
     </div>
-    <!-- scratch file button pinned to bottom -->
-    <div class="sidebar-scratch">
+
+    <ul class="sidebar-nav">
+      <li class="active" id="nav-ide"><a href="#">IDE</a></li>
+      <li><a href="#">My Projects</a></li>
+      <li><a href="#">Classroom <span class="label-danger">new</span></a></li>
+      <li><a href="#">Learn Programming</a></li>
+      <li><a href="#">Programming Questions</a></li>
+      <li><a href="#">Sign Up</a></li>
+      <li><a href="#">Login</a></li>
+    </ul>
+
+    <div class="sidebar-scratch-area">
       <button class="scratch-btn" onclick="openScratch()">&#128221; scratch.c</button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div>
+        <a href="#">About</a> &bull; <a href="#">FAQ</a> &bull; <a href="#">Docs</a> &bull; <a href="#">Blog</a> &bull; <a href="#">Terms</a> &bull; <a href="#">Contact</a>
+      </div>
+      <span class="copyright">&copy; 2016–2026 GDB Online</span>
     </div>
   </div>
 
   <!-- ═══ RIGHT COLUMN ═══ -->
-  <div class="right-col">
+  <div id="right-component">
 
-    <!-- TOP BAR -->
-    <div class="topbar">
-      <div class="tb-run-group">
-        <button class="tb-run btn-run" id="runBtn" onclick="runCode()">&#9654; Run</button>
-        <button class="tb-run btn-debug">&#x1F41E; Debug</button>
-        <button class="tb-run btn-stop" onclick="stopCode()">&#9632; Stop</button>
+    <!-- TITLE BAR -->
+    <div id="title-bar">
+      <!-- new file + upload -->
+      <div class="btn-group">
+        <button class="btn btn-default btn-half" title="New File (Ctrl+M)">&#128196;</button>
+        <button class="btn btn-default btn-half" title="Upload File">&#9650;</button>
       </div>
-      <div class="tb-right">
-        <div class="tb-right-item">Sign In</div>
-        <div class="tb-right-item btn-signup-top">Sign Up</div>
+
+      <!-- Run -->
+      <div class="btn-group">
+        <button class="btn btn-success" id="runBtn" onclick="runCode()">&#9654; Run</button>
+        <button class="btn btn-success btn-half" style="padding:5px 5px;">&#9660;</button>
+      </div>
+
+      <!-- Debug / Stop -->
+      <button class="btn btn-primary" id="debugBtn">&#9654;&#9711; Debug</button>
+      <button class="btn btn-danger" id="stopBtn" onclick="stopCode()">&#9632; Stop</button>
+
+      <!-- Share / Save / Beautify / Download -->
+      <button class="btn btn-warning">&#10150; Share</button>
+      <button class="btn btn-primary">&#128190; Save</button>
+      <button class="btn btn-info" onclick="doBeautify()">{ } Beautify</button>
+      <div class="btn-group">
+        <button class="btn btn-info btn-half">&#8659;</button>
+        <button class="btn btn-info btn-half">&#9660;</button>
+      </div>
+
+      <!-- Language + settings -->
+      <div class="lang-area">
+        <span class="lang-label">Language</span>
+        <select id="lang-select">
+          <option selected value="c">C</option>
+          <option value="c++">C++</option>
+          <option value="c++14">C++ 14</option>
+          <option value="c++17">C++ 17</option>
+          <option value="c++20">C++ 20</option>
+          <option value="java">Java</option>
+          <option value="python">Python 3</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="php">PHP</option>
+          <option value="c#">C# (mono)</option>
+          <option value="ruby">Ruby</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="swift">Swift</option>
+          <option value="bash">Bash</option>
+        </select>
+        <button class="btn btn-warning" style="padding:5px 8px;">&#9432;</button>
+        <button class="btn btn-warning" style="padding:5px 8px;">&#9881;</button>
+      </div>
+
+      <!-- Program selector -->
+      <div class="prog-select-wrap">
+        <select id="progSel" onchange="loadProg(this.value)">
+          <option value="">&#128193; Load Program&hellip;</option>
+          <option value="1">01 &bull; Insert at Position (Array)</option>
+          <option value="2">02 &bull; Delete at Position (Array)</option>
+          <option value="3">03 &bull; Factorial via Recursion</option>
+          <option value="4">04 &bull; Stack &ndash; Push</option>
+          <option value="5">05 &bull; Stack &ndash; Pop</option>
+          <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
+          <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
+          <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
+          <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
+        </select>
       </div>
     </div>
 
-    <!-- SECOND TOOLBAR -->
-    <div class="toolbar2">
-      <button class="t2-btn" onclick="doBeautify()">&#10022; Beautify</button>
-      <button class="t2-btn">&#128190; Save</button>
-      <button class="t2-btn">&#128279; Share</button>
-      <div style="width:1px;height:20px;background:#ddd;margin:0 4px;"></div>
-      <select class="t2-select" id="langSel">
-        <option selected>C</option>
-        <option>C++</option><option>C++ 14</option><option>C++ 17</option>
-        <option>Python 3</option><option>Java</option><option>Kotlin</option>
-        <option>C#</option><option>PHP</option><option>Go</option>
-      </select>
-      <div class="t2-filetab" id="fileTab">main.c &nbsp;&#10005;</div>
-      <select class="t2-prog-select" id="progSel" onchange="loadProg(this.value)">
-        <option value="">&#128193; Load program&#8230;</option>
-        <option value="1">01 &bull; Insert at Position (Array)</option>
-        <option value="2">02 &bull; Delete at Position (Array)</option>
-        <option value="3">03 &bull; Factorial via Recursion</option>
-        <option value="4">04 &bull; Stack &ndash; Push</option>
-        <option value="5">05 &bull; Stack &ndash; Pop</option>
-        <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
-        <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
-        <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
-        <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
-      </select>
+    <!-- FILE TABS -->
+    <div id="file-tabs-bar">
+      <div class="file-tab active" id="fileTab">main.c</div>
     </div>
 
-    <!-- WORKSPACE -->
-    <div class="workspace">
-
-      <!-- EDITOR (syntax highlighted, read-only display) -->
+    <!-- TOP COMPONENT: editor -->
+    <div id="top-component">
+      <!-- syntax editor -->
       <div class="editor-wrap" id="editorWrap">
         <div class="line-gutter" id="lineGutter"></div>
         <div class="code-scroll" id="codeScroll" onscroll="syncGutter()">
           <div class="code-inner" id="codeInner"></div>
         </div>
       </div>
-
-      <!-- SCRATCH EDITOR (writable textarea) -->
+      <!-- scratch textarea -->
       <textarea class="scratch-editor" id="scratchEditor"
         placeholder="// scratch.c — write anything here"
         spellcheck="false"></textarea>
-
-      <!-- RESIZE HANDLE -->
-      <div class="resizer" id="resizer">
-        <span class="resizer-grip">&#8226; &#8226; &#8226; &#8226; &#8226;</span>
-        <button class="resizer-toggle" id="toggleBtn" onclick="togglePanel(event)">&#9650;</button>
-      </div>
-
-      <!-- OUTPUT PANEL -->
-      <div class="output-panel" id="outputPanel">
-        <div class="out-tabs">
-          <div class="out-tab active">Output</div>
-          <div class="out-tab">Input</div>
-          <div class="out-tab">Debug</div>
-        </div>
-        <div class="stdin-strip">
-          <label><input type="radio" name="stdin" checked/> Interactive Console</label>
-          <label><input type="radio" name="stdin"/> Text Input</label>
-        </div>
-        <div class="output-body" id="outputBody"></div>
-      </div>
-
-    </div><!-- /workspace -->
-
-    <!-- STATUS BAR -->
-    <div class="statusbar">
-      <div class="st"><div class="st-dot"></div> Ready</div>
-      <div class="st-sep">|</div>
-      <div class="st">Language: C</div>
-      <div class="st-sep">|</div>
-      <div class="st" id="stFile">main.c</div>
-      <div class="st-sep">|</div>
-      <div class="st" id="stMsg">Ln 1, Col 1</div>
     </div>
 
-  </div><!-- /right-col -->
+    <!-- RESIZE DIVIDER -->
+    <div id="my-divider1">
+      <span class="resizer-grip">&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+      <button class="resizer-toggle" id="toggleBtn" onclick="togglePanel(event)">&#9650;</button>
+    </div>
 
+    <!-- BOTTOM COMPONENT: input/output -->
+    <div id="bottom-component">
+      <div id="input_output_pan">
+
+        <!-- pan control buttons -->
+        <div class="pan_control_button_bar">
+          <button class="ctrl-btn" onclick="togglePanelHide()" title="Hide">&#8964;</button>
+          <button class="ctrl-btn" id="maxMinBtn" onclick="togglePanel2()" title="Maximize">&#9635;</button>
+          <button class="ctrl-btn" title="Vertical Position">&#9638;</button>
+          <button class="ctrl-btn" title="Terminal Settings">&#9881;</button>
+          <button class="ctrl-btn" title="Copy output">&#9112;</button>
+        </div>
+
+        <!-- console tabs -->
+        <div id="console-title-bar">
+          <ul class="console-tabs">
+            <li class="console-tab active" id="tab-btn-stdin"  onclick="switchTab('stdin')">input</li>
+            <li class="console-tab"        id="tab-btn-stdout" onclick="switchTab('stdout')">stdout</li>
+            <li class="console-tab"        id="tab-btn-stderr" onclick="switchTab('stderr')">stderr</li>
+          </ul>
+        </div>
+
+        <!-- stdin pane -->
+        <div class="stdin-area" id="pane-stdin">
+          <div class="stdin-radio-row">
+            Standard Input:
+            <label><input type="radio" name="input_method" value="interactive" checked/> Interactive Console</label>
+            <label style="margin-left:30px;"><input type="radio" name="input_method" value="text"/> Text</label>
+          </div>
+        </div>
+
+        <!-- stdout pane -->
+        <div class="output-area" id="pane-stdout"></div>
+
+        <!-- stderr pane -->
+        <div class="output-area" id="pane-stderr"></div>
+
+      </div>
+    </div>
+
+  </div><!-- /right-component -->
 </div><!-- /page -->
 
 <script>
-/* ════════════════════════════════
-   PROGRAM DATA
-════════════════════════════════ */
+/* ════════════════════════════════════════
+   PROGRAMS
+════════════════════════════════════════ */
 const P={
-1:{f:"main.c",code:`/******************************************************************************
- * Program : Insertion at a specific position in an array
- * Topic   : Arrays | Data Structures Lab
- ******************************************************************************/
+1:{f:'main.c',code:`/******************************************************************************
+
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 
 #define MAX_SIZE 100
@@ -748,11 +616,14 @@ int main()
     }
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'25'},{t:'p',s:'Enter position (1 to 1): '},{t:'u',s:'1'},{t:'o',s:'Inserted 25 at position 1.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 25 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.003 s'},{t:'i',s:'Press ENTER to continue.'}]},
+2:{f:'main.c',code:`/******************************************************************************
 
-2:{f:"main.c",code:`/******************************************************************************
- * Program : Deletion at a specific position in an array
- * Topic   : Arrays | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 
 #define MAX_SIZE 10
@@ -838,11 +709,14 @@ int main()
     }
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Delete element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 50 60 70 80 90 100 '},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter position (1 to 10): '},{t:'u',s:'5'},{t:'o',s:'Deleted element: 50'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 60 70 80 90 100 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+3:{f:'main.c',code:`/******************************************************************************
 
-3:{f:"main.c",code:`/******************************************************************************
- * Program : Factorial using Recursion
- * Topic   : Recursion | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 
 long long factorial(int n)
@@ -886,11 +760,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'p',s:'Enter a number: '},{t:'u',s:'7'},{t:'o',s:'Factorial of 7 is: 5040'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.001 s'},{t:'i',s:'Press ENTER to continue.'}]},
+4:{f:'main.c',code:`/******************************************************************************
 
-4:{f:"main.c",code:`/******************************************************************************
- * Program : Push and Display on a Stack using Array
- * Topic   : Stack | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define SIZE 5
 
@@ -976,11 +853,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Push'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'10'},{t:'o',s:'Pushed 10 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'20'},{t:'o',s:'Pushed 20 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+5:{f:'main.c',code:`/******************************************************************************
 
-5:{f:"main.c",code:`/******************************************************************************
- * Program : Pop and Display on a Stack using Array
- * Topic   : Stack | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define SIZE 5
 
@@ -1062,11 +942,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Pop'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'40'},{t:'o',s:'50'},{t:'o',s:'30'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Popped value = 40'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+6:{f:'main.c',code:`/******************************************************************************
 
-6:{f:"main.c",code:`/******************************************************************************
- * Program : Enqueue - Array Implementation of Linear Queue
- * Topic   : Queue | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define SIZE 5
 
@@ -1153,11 +1036,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'100'},{t:'o',s:'Inserted 100 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'200'},{t:'o',s:'Inserted 200 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+7:{f:'main.c',code:`/******************************************************************************
 
-7:{f:"main.c",code:`/******************************************************************************
- * Program : Dequeue - Array Implementation of Linear Queue
- * Topic   : Queue | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define SIZE 5
 
@@ -1240,11 +1126,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued value = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+8:{f:'main.c',code:`/******************************************************************************
 
-8:{f:"main.c",code:`/******************************************************************************
- * Program : Enqueue on a Circular Queue using Array
- * Topic   : Circular Queue | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define MAX 6
 
@@ -1324,11 +1213,14 @@ int main()
     return 0;
 }`,
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'10'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'20'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'30'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'10'},{t:'o',s:'20'},{t:'o',s:'30'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+9:{f:'main.c',code:`/******************************************************************************
 
-9:{f:"main.c",code:`/******************************************************************************
- * Program : Dequeue on a Circular Queue using Array
- * Topic   : Circular Queue | Data Structures Lab
- ******************************************************************************/
+                        Online C Compiler.
+            Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <stdio.h>
 #define MAX 6
 
@@ -1415,126 +1307,9 @@ int main()
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued element = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]}
 };
 
-/* ══ NAV CLICK ══ */
-function navClick(el){
-  document.querySelectorAll('.sidebar-nav-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-}
-
-/* ══ SCRATCH FILE ══ */
-let scratchMode=false;
-
-function openScratch(){
-  scratchMode=true;
-  document.getElementById('editorWrap').style.display='none';
-  const se=document.getElementById('scratchEditor');
-  se.style.display='block';
-  se.style.flex='1';
-  se.style.minHeight='0';
-  // seed with template only if empty
-  if(!se.value.trim()){
-    se.value = `#include <stdio.h>\n\nint main()\n{\n    \n    return 0;\n}`;
-    // place cursor at the blank line inside main
-    const pos = se.value.indexOf('    \n');
-    se.selectionStart = se.selectionEnd = pos + 4;
-  }
-  document.getElementById('fileTab').innerHTML='scratch.c &nbsp;&#10005;';
-  document.getElementById('stFile').textContent='scratch.c';
-  document.getElementById('stMsg').textContent='Editable — no output';
-  document.getElementById('outputBody').innerHTML='';
-  document.getElementById('progSel').value='';
-  se.focus();
-}
-
-function openEditor(){
-  scratchMode=false;
-  document.getElementById('scratchEditor').style.display='none';
-  document.getElementById('editorWrap').style.display='flex';
-}
-
-/* ══ SMART SCRATCH EDITOR ══ */
-document.getElementById('scratchEditor').addEventListener('keydown', function(e){
-  const ta = this;
-  const start = ta.selectionStart;
-  const end   = ta.selectionEnd;
-  const val   = ta.value;
-
-  /* ── TAB → 4 spaces ── */
-  if(e.key === 'Tab'){
-    e.preventDefault();
-    const spaces = '    ';
-    ta.value = val.substring(0,start) + spaces + val.substring(end);
-    ta.selectionStart = ta.selectionEnd = start + 4;
-    return;
-  }
-
-  /* ── ENTER → auto-indent + brace handling ── */
-  if(e.key === 'Enter'){
-    e.preventDefault();
-
-    // find indent of current line
-    const lineStart = val.lastIndexOf('\n', start-1) + 1;
-    const currentLine = val.substring(lineStart, start);
-    const indent = currentLine.match(/^(\s*)/)[1];
-
-    const charBefore = val.substring(0, start).trimEnd().slice(-1);
-    const charAfter  = val[end] || '';
-
-    if(charBefore === '{' && charAfter === '}'){
-      // cursor is between { } → split with extra indent
-      const extra = indent + '    ';
-      const insert = '\n' + extra + '\n' + indent;
-      ta.value = val.substring(0,start) + insert + val.substring(end);
-      ta.selectionStart = ta.selectionEnd = start + 1 + extra.length;
-    } else {
-      // normal enter: keep indent, add extra if line ends with {
-      const addExtra = charBefore === '{' ? '    ' : '';
-      const insert = '\n' + indent + addExtra;
-      ta.value = val.substring(0,start) + insert + val.substring(end);
-      ta.selectionStart = ta.selectionEnd = start + insert.length;
-    }
-    return;
-  }
-
-  /* ── Auto-close pairs ── */
-  const pairs = { '{':'}', '(':')', '[':']', '"':'"', "'":"'" };
-  if(pairs[e.key]){
-    e.preventDefault();
-    const close = pairs[e.key];
-    // if text selected, wrap it
-    if(start !== end){
-      const selected = val.substring(start,end);
-      ta.value = val.substring(0,start) + e.key + selected + close + val.substring(end);
-      ta.selectionStart = start+1;
-      ta.selectionEnd   = end+1;
-    } else {
-      ta.value = val.substring(0,start) + e.key + close + val.substring(end);
-      ta.selectionStart = ta.selectionEnd = start+1;
-    }
-    return;
-  }
-
-  /* ── Skip over closing char if already there ── */
-  const closers = new Set(['}',')',']','"',"'"]);
-  if(closers.has(e.key) && val[start] === e.key){
-    e.preventDefault();
-    ta.selectionStart = ta.selectionEnd = start+1;
-    return;
-  }
-
-  /* ── Backspace: remove paired closer ── */
-  if(e.key === 'Backspace' && start === end && start > 0){
-    const open  = val[start-1];
-    const close = val[start];
-    const autoPairs = {'{':'}','(':')','[':']','"':'"',"'":"'"};    if(autoPairs[open] === close){
-      e.preventDefault();
-      ta.value = val.substring(0,start-1) + val.substring(start+1);
-      ta.selectionStart = ta.selectionEnd = start-1;
-    }
-  }
-});
-
-/* ══ SYNTAX ══ */
+/* ════════════════════════════════════════
+   SYNTAX HIGHLIGHT
+════════════════════════════════════════ */
 function hl(r){
   let s=r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   if(/^\s*(\/\/|\/\*|\*)/.test(s))return`<span class="cmt">${s}</span>`;
@@ -1549,7 +1324,9 @@ function hl(r){
   return s;
 }
 
-/* ══ RENDER CODE ══ */
+/* ════════════════════════════════════════
+   RENDER
+════════════════════════════════════════ */
 let cur=null;
 function render(code){
   const lines=code.split('\n');
@@ -1568,56 +1345,118 @@ function syncGutter(){
   document.getElementById('codeScroll').scrollTop;
 }
 
-/* ══ LOAD PROGRAM ══ */
+/* ════════════════════════════════════════
+   SCRATCH
+════════════════════════════════════════ */
+let scratchMode=false;
+function openScratch(){
+  scratchMode=true;
+  document.getElementById('editorWrap').style.display='none';
+  const se=document.getElementById('scratchEditor');
+  se.style.display='block';se.style.flex='1';se.style.minHeight='0';
+  if(!se.value.trim()){
+    se.value=`#include <stdio.h>\n\nint main()\n{\n    \n    return 0;\n}`;
+    const pos=se.value.indexOf('    \n');
+    se.selectionStart=se.selectionEnd=pos+4;
+  }
+  document.getElementById('fileTab').textContent='scratch.c';
+  document.getElementById('progSel').value='';
+  se.focus();
+}
+function openEditor(){
+  scratchMode=false;
+  document.getElementById('scratchEditor').style.display='none';
+  document.getElementById('editorWrap').style.display='flex';
+}
+
+/* Smart editor keys */
+document.getElementById('scratchEditor').addEventListener('keydown',function(e){
+  const ta=this,start=ta.selectionStart,end=ta.selectionEnd,val=ta.value;
+  if(e.key==='Tab'){
+    e.preventDefault();
+    ta.value=val.substring(0,start)+'    '+val.substring(end);
+    ta.selectionStart=ta.selectionEnd=start+4;return;
+  }
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const ls=val.lastIndexOf('\n',start-1)+1;
+    const indent=val.substring(ls,start).match(/^(\s*)/)[1];
+    const cb=val.substring(0,start).trimEnd().slice(-1);
+    const ca=val[end]||'';
+    if(cb==='{' && ca==='}'){
+      const ex=indent+'    ';
+      const ins='\n'+ex+'\n'+indent;
+      ta.value=val.substring(0,start)+ins+val.substring(end);
+      ta.selectionStart=ta.selectionEnd=start+1+ex.length;
+    } else {
+      const ins='\n'+indent+(cb==='{'?'    ':'');
+      ta.value=val.substring(0,start)+ins+val.substring(end);
+      ta.selectionStart=ta.selectionEnd=start+ins.length;
+    }return;
+  }
+  const pairs={'{'  :'}','(':')',  '[':']','"':'"',"'":"'"};
+  if(pairs[e.key]){
+    e.preventDefault();
+    const cl=pairs[e.key];
+    if(start!==end){
+      const sel=val.substring(start,end);
+      ta.value=val.substring(0,start)+e.key+sel+cl+val.substring(end);
+      ta.selectionStart=start+1;ta.selectionEnd=end+1;
+    } else {
+      ta.value=val.substring(0,start)+e.key+cl+val.substring(end);
+      ta.selectionStart=ta.selectionEnd=start+1;
+    }return;
+  }
+  const closers=new Set(['}',')',']','"',"'"]);
+  if(closers.has(e.key)&&val[start]===e.key){e.preventDefault();ta.selectionStart=ta.selectionEnd=start+1;return;}
+  if(e.key==='Backspace'&&start===end&&start>0){
+    const ap={'{'  :'}','(':')','[':']','"':'"',"'":"'"};
+    if(ap[val[start-1]]===val[start]){
+      e.preventDefault();
+      ta.value=val.substring(0,start-1)+val.substring(start+1);
+      ta.selectionStart=ta.selectionEnd=start-1;
+    }
+  }
+});
+
+/* ════════════════════════════════════════
+   LOAD PROGRAM
+════════════════════════════════════════ */
 function loadProg(idx){
-  if(!idx) return;
+  if(!idx)return;
   openEditor();
   cur=P[idx];
   render(cur.code);
-  document.getElementById('outputBody').innerHTML='';
-  document.getElementById('fileTab').innerHTML=cur.f+'&nbsp;&#10005;';
-  document.getElementById('stFile').textContent=cur.f;
-  document.getElementById('stMsg').textContent='Loaded';
+  clearOutput();
+  document.getElementById('fileTab').textContent=cur.f;
 }
-function setActiveFile(el){
-  document.querySelectorAll('.sidebar-file').forEach(f=>f.classList.remove('active'));
-  el.classList.add('active');
-}
-/* nav item click highlight */
-document.querySelectorAll('.sidebar-nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.sidebar-nav-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-  });
-});
 
-/* ══ RUN ══ */
+/* ════════════════════════════════════════
+   RUN
+════════════════════════════════════════ */
 let running=false,timer=null;
 function runCode(){
   if(running)return;
-  if(!cur){addLine({t:'e',s:'No program loaded.'});return;}
+  if(scratchMode){addOut({t:'i',s:'scratch.c — no output in scratch mode.'});switchTab('stdout');return;}
+  if(!cur){addOut({t:'o',s:'// No program loaded. Select one from the dropdown above.'});switchTab('stdout');return;}
   running=true;
   const btn=document.getElementById('runBtn');
   btn.classList.add('running');btn.innerHTML='&#9632; Running...';
-  document.getElementById('outputBody').innerHTML='';
-  document.getElementById('stMsg').textContent='Compiling...';
+  clearOutput();
+  switchTab('stdout');
   setTimeout(()=>{
-    document.getElementById('stMsg').textContent='Running...';
     play(cur.out,0,()=>{
-      running=false;btn.classList.remove('running');
-      btn.innerHTML='&#9654; Run';
-      document.getElementById('stMsg').textContent='Finished';
+      running=false;btn.classList.remove('running');btn.innerHTML='&#9654; Run';
     });
-  },450);
+  },400);
 }
 function play(lines,i,done){
   if(i>=lines.length){done();return;}
-  addLine(lines[i]);
-  timer=setTimeout(()=>play(lines,i+1,done),
-    lines[i].t==='u'?190:lines[i].t==='i'?60:45);
+  addOut(lines[i]);
+  timer=setTimeout(()=>play(lines,i+1,done),lines[i].t==='u'?190:lines[i].t==='i'?65:50);
 }
-function addLine(line){
-  const ob=document.getElementById('outputBody');
+function addOut(line){
+  const out=document.getElementById('pane-stdout');
   const sp=document.createElement('span');sp.className='ol';
   const s=esc(line.s);
   if(line.t==='i')sp.innerHTML=`<span class="o-info">${s}</span>\n`;
@@ -1625,105 +1464,140 @@ function addLine(line){
   else if(line.t==='u')sp.innerHTML=`<span class="o-input">${s}</span>\n`;
   else if(line.t==='e')sp.innerHTML=`<span class="o-err">${s}</span>\n`;
   else sp.innerHTML=s+'\n';
-  ob.appendChild(sp);ob.scrollTop=ob.scrollHeight;
+  out.appendChild(sp);out.scrollTop=out.scrollHeight;
+}
+function clearOutput(){
+  document.getElementById('pane-stdout').innerHTML='';
+  document.getElementById('pane-stderr').innerHTML='';
 }
 function stopCode(){
   if(timer)clearTimeout(timer);running=false;
   const btn=document.getElementById('runBtn');
   btn.classList.remove('running');btn.innerHTML='&#9654; Run';
-  document.getElementById('stMsg').textContent='Stopped';
-  addLine({t:'e',s:'[Process terminated by user]'});
+  addOut({t:'e',s:'[Process terminated by user]'});
 }
 function doBeautify(){
-  if(!cur)return;
+  if(!cur||scratchMode)return;
   const ci=document.getElementById('codeInner');
   ci.style.opacity='0';ci.style.transition='opacity .15s';
-  setTimeout(()=>{render(cur.code);ci.style.opacity='1';
-  document.getElementById('stMsg').textContent='Beautified';},160);
+  setTimeout(()=>{render(cur.code);ci.style.opacity='1';},160);
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-/* ══ DRAG RESIZE ══ */
-const rz=document.getElementById('resizer');
-const op=document.getElementById('outputPanel');
-let dr=false,sy=0,sh=0;
+/* ════════════════════════════════════════
+   TAB SWITCHING
+════════════════════════════════════════ */
+function switchTab(name){
+  ['stdin','stdout','stderr'].forEach(t=>{
+    document.getElementById('pane-'+t).style.display= t===name&&name!=='stdin'?'block':'none';
+    document.getElementById('tab-btn-'+t).classList.toggle('active',t===name);
+  });
+  if(name==='stdin') document.getElementById('pane-stdin').style.display='flex';
+}
 
+/* ════════════════════════════════════════
+   RESIZE / TOGGLE PANEL
+════════════════════════════════════════ */
+const rz=document.getElementById('my-divider1');
+const bp=document.getElementById('bottom-component');
+let dr=false,sy=0,sh=0;
 rz.addEventListener('mousedown',e=>{
   if(e.target.id==='toggleBtn')return;
-  dr=true;sy=e.clientY;sh=op.offsetHeight;
+  dr=true;sy=e.clientY;sh=bp.offsetHeight;
   document.body.style.userSelect='none';
 });
 window.addEventListener('mousemove',e=>{
   if(!dr)return;
-  const newH=Math.max(80,Math.min(maxPanelHeight(),sh+(sy-e.clientY)));
-  op.style.height=newH+'px';
-  op.style.transition='none';
-  updateToggleBtn(newH);
+  const ws=document.getElementById('top-component').parentElement;
+  const maxH=ws.offsetHeight-30;
+  const newH=Math.max(60,Math.min(maxH,sh+(sy-e.clientY)));
+  bp.style.height=newH+'px';bp.style.transition='none';
+  updateToggleBtn(newH,maxH);
 });
 window.addEventListener('mouseup',()=>{dr=false;document.body.style.userSelect='';});
 
-function maxPanelHeight(){
-  const ws=document.querySelector('.workspace');
-  return ws.offsetHeight - 20 - 10;
-}
-
 let expanded=false;
-const SMALL_H=220;
-
+const SMALL_H=230;
 function togglePanel(e){
   e.stopPropagation();
-  const btn=document.getElementById('toggleBtn');
-  op.style.transition='height .3s cubic-bezier(.4,0,.2,1)';
+  const ws=document.getElementById('right-component');
+  const maxH=ws.offsetHeight-80;
+  bp.style.transition='height .3s cubic-bezier(.4,0,.2,1)';
   if(!expanded){
-    const ws=document.querySelector('.workspace');
-    const bigH=ws.offsetHeight - 24;
-    op.style.height=bigH+'px';
-    btn.innerHTML='&#9660;';
+    bp.style.height=maxH+'px';
+    document.getElementById('toggleBtn').innerHTML='&#9660;';
     expanded=true;
   } else {
-    op.style.height=SMALL_H+'px';
-    btn.innerHTML='&#9650;';
+    bp.style.height=SMALL_H+'px';
+    document.getElementById('toggleBtn').innerHTML='&#9650;';
     expanded=false;
   }
 }
-
-function updateToggleBtn(h){
-  const btn=document.getElementById('toggleBtn');
-  const ws=document.querySelector('.workspace');
-  const bigH=ws.offsetHeight-24;
-  if(h>=bigH-10){
-    expanded=true;btn.innerHTML='&#9660;';
+function togglePanel2(){
+  togglePanel({stopPropagation:()=>{}});
+}
+function togglePanelHide(){
+  bp.style.transition='height .25s ease';
+  if(bp.offsetHeight>40){
+    bp.dataset.prev=bp.offsetHeight;
+    bp.style.height='28px';
+    expanded=false;
+    document.getElementById('toggleBtn').innerHTML='&#9650;';
   } else {
-    expanded=false;btn.innerHTML='&#9650;';
+    bp.style.height=(bp.dataset.prev||SMALL_H)+'px';
   }
 }
+function updateToggleBtn(h,maxH){
+  const btn=document.getElementById('toggleBtn');
+  if(h>=maxH-10){expanded=true;btn.innerHTML='&#9660;';}
+  else{expanded=false;btn.innerHTML='&#9650;';}
+}
 
-/* ══ INIT ══ */
-loadProg(1);
-document.getElementById('progSel').value='1';
+/* ════════════════════════════════════════
+   SIDEBAR FOLD
+════════════════════════════════════════ */
+let sidebarOpen=true;
+function toggleSidebar(){
+  const sb=document.getElementById('left-component');
+  const btn=sb.querySelector('.fold-btn');
+  sidebarOpen=!sidebarOpen;
+  sb.style.transition='width .25s ease';
+  sb.style.width=sidebarOpen?'190px':'28px';
+  sb.querySelectorAll('.sidebar-logo-link,.sidebar-tagline,.sidebar-motto,.sidebar-nav,.sidebar-scratch-area,.sidebar-footer')
+    .forEach(el=>el.style.display=sidebarOpen?'':'none');
+  btn.innerHTML=sidebarOpen?'&#10094;':'&#10095;';
+}
 
-/* ══ LOGIN ══ */
+/* ════════════════════════════════════════
+   LOGIN
+════════════════════════════════════════ */
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value.trim();
   const err=document.getElementById('loginErr');
-  const ui=document.getElementById('loginUser');
-  const pi=document.getElementById('loginPass');
   if(u==='manas'&&p==='manas'){
-    err.textContent='';
     const ov=document.getElementById('loginOverlay');
-    ov.classList.add('unlocking');
-    setTimeout(()=>ov.style.display='none',480);
+    ov.classList.add('login-out');
+    setTimeout(()=>ov.style.display='none',440);
   } else {
-    err.textContent='⚠ incorrect credentials — try again';
-    ui.classList.add('error');pi.classList.add('error');
-    setTimeout(()=>{ui.classList.remove('error');pi.classList.remove('error');},400);
+    err.textContent='Invalid credentials. Please try again.';
+    ['loginUser','loginPass'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.add('shake');
+      setTimeout(()=>el.classList.remove('shake'),400);
+    });
     document.getElementById('loginPass').value='';
     document.getElementById('loginUser').focus();
   }
 }
-/* focus username on load */
 document.getElementById('loginUser').focus();
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+loadProg(1);
+document.getElementById('progSel').value='1';
+switchTab('stdin');
 </script>
 </body>
 </html>
