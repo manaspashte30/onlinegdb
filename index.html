@@ -92,20 +92,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
   display:flex;align-items:center;padding:0;flex-shrink:0;
   font-size:13px;color:#333;
 }
-.tb-logo{
-  background:#e91e63;color:#fff;height:100%;
-  display:flex;align-items:center;padding:0 14px;
-  font-size:14px;font-weight:500;letter-spacing:.3px;white-space:nowrap;
-  flex-shrink:0;
-}
-.tb-logo span{color:#fce4ec;font-weight:300;font-size:12px;margin-left:1px;}
-.tb-menu-item{
-  padding:0 12px;height:100%;display:flex;align-items:center;
-  cursor:pointer;color:#444;font-size:12.5px;white-space:nowrap;
-  border-right:1px solid #e0e0e0;transition:background .15s;
-}
-.tb-menu-item:hover{background:#e8e8e8;}
-.tb-menu-item.active{background:#e3f2fd;color:#1565c0;}
+.tb-menu-item{display:none;}
 
 .tb-run-group{display:flex;align-items:center;height:100%;margin-left:4px;gap:3px;padding:0 6px;}
 .tb-run{
@@ -171,36 +158,67 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
 
 /* ─── LEFT SIDEBAR ─── */
 .sidebar{
-  width:200px;flex-shrink:0;background:#eceff1;
-  border-right:1px solid #cfd8dc;display:flex;flex-direction:column;
+  width:172px;flex-shrink:0;
+  background:#bbdefb;
+  border-right:1px solid #90caf9;
+  display:flex;flex-direction:column;
   overflow:hidden;
 }
-.sidebar-head{
-  background:#b0bec5;padding:6px 10px;font-size:11.5px;font-weight:500;
-  color:#263238;letter-spacing:.03em;border-bottom:1px solid #90a4ae;
+
+/* logo area inside sidebar */
+.sidebar-logo{
+  background:#1565c0;
+  padding:10px 14px 9px;
+  font-size:15px;font-weight:700;color:#fff;
+  letter-spacing:-.2px;border-bottom:2px solid #0d47a1;
+  flex-shrink:0;
+}
+.sidebar-logo span{color:#90caf9;font-weight:300;}
+
+/* nav items */
+.sidebar-nav{
+  display:flex;flex-direction:column;
+  border-bottom:1px solid #90caf9;
+  flex-shrink:0;
+}
+.sidebar-nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 14px;font-size:13px;color:#0d47a1;
+  cursor:pointer;border-bottom:1px solid #90caf9;
+  transition:background .13s;font-weight:400;
+  background:#bbdefb;
+}
+.sidebar-nav-item:last-child{border-bottom:none;}
+.sidebar-nav-item:hover{background:#90caf9;}
+.sidebar-nav-item.active{
+  background:#1565c0;color:#fff;font-weight:500;
+}
+.sidebar-nav-item .nav-icon{font-size:14px;width:18px;text-align:center;}
+
+/* files section */
+.sidebar-files-head{
+  padding:6px 14px 4px;font-size:10px;color:#1565c0;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:#bbdefb;border-bottom:1px solid #90caf9;
   display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
 }
 .sidebar-add{
-  width:18px;height:18px;background:#546e7a;border-radius:2px;
+  width:16px;height:16px;background:#1565c0;border-radius:2px;
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:14px;cursor:pointer;line-height:1;
+  color:#fff;font-size:13px;cursor:pointer;line-height:1;
 }
-.sidebar-add:hover{background:#37474f;}
+.sidebar-add:hover{background:#0d47a1;}
 .sidebar-file{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 10px;font-size:12.5px;color:#263238;cursor:pointer;
-  border-bottom:1px solid #dde;transition:background .12s;
+  display:flex;align-items:center;gap:7px;
+  padding:5px 14px;font-size:12px;color:#0d47a1;cursor:pointer;
+  border-bottom:1px solid #bbdefb;transition:background .12s;
+  background:#ddeeff;
 }
-.sidebar-file:hover{background:#dde3e7;}
-.sidebar-file.active{background:#c5cae9;color:#283593;}
-.file-icon{font-size:13px;color:#607d8b;}
-.sidebar-file.active .file-icon{color:#3949ab;}
-
-.sidebar-section{
-  padding:4px 10px 2px;font-size:10.5px;color:#78909c;
-  font-weight:500;letter-spacing:.08em;text-transform:uppercase;
-  border-bottom:1px solid #cfd8dc;background:#e0e5e8;
-}
+.sidebar-file:hover{background:#90caf9;}
+.sidebar-file.active{background:#1565c0;color:#fff;}
+.file-icon{font-size:12px;color:#1976d2;}
+.sidebar-file.active .file-icon{color:#90caf9;}
 
 /* ─── MAIN EDITOR + OUTPUT ─── */
 .main-area{
@@ -300,17 +318,209 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
 .o-input{color:#64b5f6;}
 .o-err{color:#ef5350;}
 
-/* ─── STATUS BAR ─── */
-.statusbar{
-  height:22px;background:#007acc;display:flex;align-items:center;
-  padding:0 12px;gap:14px;flex-shrink:0;
+/* ─── PAGE ─── */
+.page{height:100vh;display:flex;flex-direction:row;overflow:hidden;}
+
+/* ─── LEFT SIDEBAR ─── full height ─── */
+.sidebar{
+  width:168px;flex-shrink:0;
+  background:#bbdefb;
+  border-right:2px solid #64b5f6;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  height:100vh;
+  z-index:10;
 }
+.sidebar-logo{
+  background:#1565c0;
+  padding:9px 14px 8px;
+  font-size:15px;font-weight:700;color:#fff;
+  letter-spacing:-.2px;border-bottom:2px solid #0d47a1;
+  flex-shrink:0;height:32px;display:flex;align-items:center;
+}
+.sidebar-logo span{color:#90caf9;font-weight:300;}
+
+.sidebar-nav{
+  display:flex;flex-direction:column;
+  flex-shrink:0;
+}
+.sidebar-nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 14px;font-size:13px;color:#0d47a1;
+  cursor:pointer;border-bottom:1px solid #90caf9;
+  transition:background .13s;font-weight:400;
+  background:#bbdefb;
+}
+.sidebar-nav-item:hover{background:#90caf9;}
+.sidebar-nav-item.active{background:#1565c0;color:#fff;font-weight:500;}
+.sidebar-nav-item .nav-icon{font-size:14px;width:18px;text-align:center;}
+
+/* scratch file entry */
+.sidebar-scratch{
+  margin-top:auto;padding:10px 14px;
+  border-top:1px solid #90caf9;background:#bbdefb;
+  flex-shrink:0;
+}
+.scratch-btn{
+  width:100%;padding:6px 10px;background:#1565c0;border:none;
+  border-radius:3px;color:#fff;font-size:12px;font-family:'Roboto',sans-serif;
+  cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;
+}
+.scratch-btn:hover{background:#0d47a1;}
+
+/* ─── RIGHT COLUMN (topbars + workspace) ─── */
+.right-col{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;
+}
+
+/* ─── TOP MENU BAR ─── */
+.topbar{
+  height:32px;background:#f5f5f5;border-bottom:1px solid #ddd;
+  display:flex;align-items:center;padding:0;flex-shrink:0;
+  font-size:13px;color:#333;
+}
+.tb-run-group{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  height:100%;gap:5px;
+}
+.tb-run{
+  display:flex;align-items:center;gap:4px;
+  padding:3px 14px;border:none;border-radius:2px;
+  font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;height:24px;
+}
+.btn-run{background:#4caf50;color:#fff;}
+.btn-run:hover{background:#43a047;}
+.btn-run.running{background:#e53935;animation:blink .6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.65}}
+.btn-debug{background:#2196f3;color:#fff;}
+.btn-debug:hover{background:#1976d2;}
+.btn-stop{background:#9e9e9e;color:#fff;}
+.btn-stop:hover{background:#757575;}
+
+.tb-right{display:flex;align-items:center;gap:0;flex-shrink:0;}
+.tb-right-item{
+  padding:0 12px;height:32px;display:flex;align-items:center;
+  font-size:12px;color:#555;cursor:pointer;border-left:1px solid #e0e0e0;
+}
+.tb-right-item:hover{background:#e8e8e8;}
+.btn-signup-top{background:#e91e63;color:#fff;border-left:1px solid #c2185b;}
+.btn-signup-top:hover{background:#c2185b;}
+
+/* ─── SECOND TOOLBAR ─── */
+.toolbar2{
+  height:34px;background:#fafafa;border-bottom:1px solid #e0e0e0;
+  display:flex;align-items:center;padding:0 0 0 4px;flex-shrink:0;gap:4px;
+}
+.t2-btn{
+  display:flex;align-items:center;gap:4px;padding:3px 10px;
+  border:1px solid #ccc;border-radius:2px;background:#fff;
+  font-size:12px;color:#444;cursor:pointer;height:24px;
+  font-family:'Roboto',sans-serif;transition:background .12s;
+}
+.t2-btn:hover{background:#f0f0f0;}
+.t2-select{
+  height:24px;border:1px solid #ccc;border-radius:2px;
+  background:#fff;font-size:12px;color:#333;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
+}
+.t2-filetab{
+  display:flex;align-items:center;gap:6px;
+  background:#fff;border:1px solid #ccc;border-bottom:none;
+  padding:3px 12px;font-size:12px;color:#333;
+  border-radius:2px 2px 0 0;cursor:pointer;
+  border-top:2px solid #4caf50;margin-left:4px;
+}
+.t2-prog-select{
+  margin-left:auto;margin-right:6px;
+  height:24px;border:1px solid #ccc;border-radius:2px;
+  background:#fffde7;font-size:11.5px;color:#555;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
+  max-width:260px;
+}
+
+/* ─── WORKSPACE (editor + output) ─── */
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+
+/* ─── EDITOR ─── */
+.editor-wrap{
+  flex:1;display:flex;overflow:hidden;min-height:0;
+  background:#1e1e1e;
+}
+.line-gutter{
+  background:#1e1e1e;width:44px;flex-shrink:0;
+  border-right:1px solid #2d2d2d;overflow:hidden;padding-top:2px;
+}
+.lnum{
+  height:19px;line-height:19px;text-align:right;padding-right:10px;
+  font-family:'Source Code Pro',monospace;font-size:13px;
+  color:#3d3d3d;user-select:none;
+}
+.code-scroll{flex:1;overflow:auto;background:#1e1e1e;}
+.code-scroll::-webkit-scrollbar{width:10px;height:10px;}
+.code-scroll::-webkit-scrollbar-track{background:#1a1a1a;}
+.code-scroll::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
+.code-scroll::-webkit-scrollbar-corner{background:#1a1a1a;}
+.code-inner{padding:2px 0 24px 14px;min-width:max-content;}
+.cl{height:19px;line-height:19px;font-family:'Source Code Pro',monospace;font-size:13px;white-space:pre;display:block;color:#d4d4d4;}
+.cl:hover{background:rgba(255,255,255,.03);}
+
+/* editable scratch area */
+.scratch-editor{
+  display:none;
+  flex:1;
+  overflow:auto;
+  background:#1e1e1e;
+  font-family:'Source Code Pro',monospace;font-size:13px;
+  color:#d4d4d4;padding:8px 14px;outline:none;
+  line-height:19px;white-space:pre;caret-color:#fff;
+  border:none;resize:none;width:100%;min-height:0;
+  box-sizing:border-box;
+}
+.scratch-editor::-webkit-scrollbar{width:10px;}
+.scratch-editor::-webkit-scrollbar-track{background:#1a1a1a;}
+.scratch-editor::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
+
+/* syntax colors */
+.kw{color:#569cd6;}.pp{color:#c586c0;}.fn{color:#dcdcaa;}
+.str{color:#ce9178;}.num{color:#b5cea8;}.cmt{color:#6a9955;font-style:italic;}.mac{color:#9cdcfe;}
+
+/* ─── RESIZER ─── */
+.resizer{
+  height:20px;background:#d6d6d6;cursor:row-resize;flex-shrink:0;
+  border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd;
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.resizer-grip{color:#aaa;font-size:9px;letter-spacing:3px;}
+.resizer-toggle{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  width:22px;height:16px;background:#9e9e9e;border:none;border-radius:3px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:#fff;transition:background .15s;user-select:none;
+}
+.resizer-toggle:hover{background:#607d8b;}
+
+/* ─── OUTPUT PANEL ─── */
+.output-panel{height:220px;flex-shrink:0;display:flex;flex-direction:column;background:#1a1a1a;}
+.out-tabs{background:#252526;border-bottom:1px solid #333;display:flex;flex-shrink:0;}
+.out-tab{padding:5px 16px;font-size:12.5px;color:#888;cursor:pointer;border-right:1px solid #333;transition:all .12s;}
+.out-tab:hover{color:#bbb;background:rgba(255,255,255,.04);}
+.out-tab.active{color:#4caf50;border-bottom:2px solid #4caf50;background:rgba(76,175,80,.06);}
+.stdin-strip{background:#1e1e1e;padding:3px 12px;display:flex;align-items:center;gap:14px;flex-shrink:0;border-bottom:1px solid #2d2d2d;}
+.stdin-strip label{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#888;}
+.stdin-strip input[type=radio]{accent-color:#4caf50;cursor:pointer;}
+.output-body{flex:1;overflow-y:auto;padding:6px 14px;font-family:'Source Code Pro',monospace;font-size:13.5px;line-height:1.6;color:#ccc;}
+.output-body::-webkit-scrollbar{width:8px;}
+.output-body::-webkit-scrollbar-track{background:#111;}
+.output-body::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:4px;}
+.ol{display:block;white-space:pre-wrap;}
+.o-info{color:#546e7a;font-style:italic;}.o-prompt{color:#4caf50;}.o-input{color:#64b5f6;}.o-err{color:#ef5350;}
+
+/* ─── STATUS BAR ─── */
+.statusbar{height:22px;background:#007acc;display:flex;align-items:center;padding:0 12px;gap:14px;flex-shrink:0;}
 .st{font-size:11.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:4px;}
 .st-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;}
 .st-sep{color:rgba(255,255,255,.3);}
-
-/* ─── PAGE ─── */
-.page{height:100vh;display:flex;flex-direction:column;overflow:hidden;}
 </style>
 </head>
 <body>
@@ -325,97 +535,86 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
     <input class="login-input" id="loginPass" type="password" placeholder="enter password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="login-btn" onclick="doLogin()">Unlock IDE</button>
     <div class="login-error" id="loginErr"></div>
-    <div class="login-hint">hint: you know who you are 😉</div>
+    <div class="login-hint">hint: owner of the website</div>
   </div>
 </div>
 
 <div class="page">
 
-<!-- TOP MENU BAR -->
-<div class="topbar">
-  <div class="tb-logo">GDB<span>online</span></div>
-  <div class="tb-menu-item active">Editor</div>
-  <div class="tb-menu-item">My Projects</div>
-  <div class="tb-menu-item">Classroom</div>
-  <div class="tb-menu-item">Learn</div>
-  <div class="tb-menu-item">Questions</div>
-
-  <div class="tb-run-group">
-    <button class="tb-run btn-run" id="runBtn" onclick="runCode()">&#9654; Run</button>
-    <button class="tb-run btn-debug">&#x1F41E; Debug</button>
-    <button class="tb-run btn-stop" onclick="stopCode()">&#9632; Stop</button>
+  <!-- ═══ LEFT SIDEBAR — full height ═══ -->
+  <div class="sidebar">
+    <div class="sidebar-logo">GDB<span>online</span></div>
+    <div class="sidebar-nav">
+      <div class="sidebar-nav-item active"  onclick="navClick(this)"><span class="nav-icon">&#9998;</span> Editor</div>
+      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#128193;</span> My Projects</div>
+      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#127979;</span> Classroom</div>
+      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#128214;</span> Learn</div>
+      <div class="sidebar-nav-item"         onclick="navClick(this)"><span class="nav-icon">&#10067;</span> Questions</div>
+    </div>
+    <!-- scratch file button pinned to bottom -->
+    <div class="sidebar-scratch">
+      <button class="scratch-btn" onclick="openScratch()">&#128221; scratch.c</button>
+    </div>
   </div>
 
-  <div class="tb-right">
-    <div class="tb-right-item">Sign In</div>
-    <div class="tb-right-item btn-signup-top">Sign Up</div>
-  </div>
-</div>
+  <!-- ═══ RIGHT COLUMN ═══ -->
+  <div class="right-col">
 
-<!-- SECOND TOOLBAR -->
-<div class="toolbar2">
-  <button class="t2-btn" onclick="doBeautify()">&#10022; Beautify</button>
-  <button class="t2-btn">&#128190; Save</button>
-  <button class="t2-btn">&#128279; Share</button>
-  <div style="width:1px;height:20px;background:#ddd;margin:0 4px;"></div>
-  <select class="t2-select" id="langSel">
-    <option selected>C</option>
-    <option>C++</option><option>C++ 14</option><option>C++ 17</option>
-    <option>Python 3</option><option>Java</option><option>Kotlin</option>
-    <option>C#</option><option>PHP</option><option>Go</option>
-  </select>
-  <div class="t2-filetab" id="fileTab">main.c &nbsp;&#10005;</div>
-  <select class="t2-prog-select" id="progSel" onchange="loadProg(this.value)">
-    <option value="">&#128193; Load program&#8230;</option>
-    <option value="1">01 &bull; Insert at Position (Array)</option>
-    <option value="2">02 &bull; Delete at Position (Array)</option>
-    <option value="3">03 &bull; Factorial via Recursion</option>
-    <option value="4">04 &bull; Stack &ndash; Push</option>
-    <option value="5">05 &bull; Stack &ndash; Pop</option>
-    <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
-    <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
-    <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
-    <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
-  </select>
-</div>
-
-<!-- BODY -->
-<div class="body-wrap" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
-
-  <div style="flex:1;display:flex;overflow:hidden;min-height:0;">
-
-    <!-- LEFT SIDEBAR -->
-    <div class="sidebar">
-      <div class="sidebar-head">
-        Files
-        <div class="sidebar-add">+</div>
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="tb-run-group">
+        <button class="tb-run btn-run" id="runBtn" onclick="runCode()">&#9654; Run</button>
+        <button class="tb-run btn-debug">&#x1F41E; Debug</button>
+        <button class="tb-run btn-stop" onclick="stopCode()">&#9632; Stop</button>
       </div>
-      <div class="sidebar-section">Project</div>
-      <div class="sidebar-file active" onclick="setActiveFile(this)">
-        <span class="file-icon">&#128196;</span> main.c
+      <div class="tb-right">
+        <div class="tb-right-item">Sign In</div>
+        <div class="tb-right-item btn-signup-top">Sign Up</div>
       </div>
-      <div class="sidebar-section" style="margin-top:4px;">Recent</div>
-      <div class="sidebar-file" onclick="loadProg(1);setActiveFile(this)"><span class="file-icon">&#128196;</span> insert.c</div>
-      <div class="sidebar-file" onclick="loadProg(2);setActiveFile(this)"><span class="file-icon">&#128196;</span> delete.c</div>
-      <div class="sidebar-file" onclick="loadProg(3);setActiveFile(this)"><span class="file-icon">&#128196;</span> factorial.c</div>
-      <div class="sidebar-file" onclick="loadProg(4);setActiveFile(this)"><span class="file-icon">&#128196;</span> push.c</div>
-      <div class="sidebar-file" onclick="loadProg(5);setActiveFile(this)"><span class="file-icon">&#128196;</span> pop.c</div>
-      <div class="sidebar-file" onclick="loadProg(6);setActiveFile(this)"><span class="file-icon">&#128196;</span> enqueue.c</div>
-      <div class="sidebar-file" onclick="loadProg(7);setActiveFile(this)"><span class="file-icon">&#128196;</span> dequeue.c</div>
-      <div class="sidebar-file" onclick="loadProg(8);setActiveFile(this)"><span class="file-icon">&#128196;</span> c_enqueue.c</div>
-      <div class="sidebar-file" onclick="loadProg(9);setActiveFile(this)"><span class="file-icon">&#128196;</span> c_dequeue.c</div>
     </div>
 
-    <!-- MAIN AREA -->
-    <div class="main-area">
+    <!-- SECOND TOOLBAR -->
+    <div class="toolbar2">
+      <button class="t2-btn" onclick="doBeautify()">&#10022; Beautify</button>
+      <button class="t2-btn">&#128190; Save</button>
+      <button class="t2-btn">&#128279; Share</button>
+      <div style="width:1px;height:20px;background:#ddd;margin:0 4px;"></div>
+      <select class="t2-select" id="langSel">
+        <option selected>C</option>
+        <option>C++</option><option>C++ 14</option><option>C++ 17</option>
+        <option>Python 3</option><option>Java</option><option>Kotlin</option>
+        <option>C#</option><option>PHP</option><option>Go</option>
+      </select>
+      <div class="t2-filetab" id="fileTab">main.c &nbsp;&#10005;</div>
+      <select class="t2-prog-select" id="progSel" onchange="loadProg(this.value)">
+        <option value="">&#128193; Load program&#8230;</option>
+        <option value="1">01 &bull; Insert at Position (Array)</option>
+        <option value="2">02 &bull; Delete at Position (Array)</option>
+        <option value="3">03 &bull; Factorial via Recursion</option>
+        <option value="4">04 &bull; Stack &ndash; Push</option>
+        <option value="5">05 &bull; Stack &ndash; Pop</option>
+        <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
+        <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
+        <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
+        <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
+      </select>
+    </div>
 
-      <!-- EDITOR -->
-      <div class="editor-wrap">
+    <!-- WORKSPACE -->
+    <div class="workspace">
+
+      <!-- EDITOR (syntax highlighted, read-only display) -->
+      <div class="editor-wrap" id="editorWrap">
         <div class="line-gutter" id="lineGutter"></div>
         <div class="code-scroll" id="codeScroll" onscroll="syncGutter()">
           <div class="code-inner" id="codeInner"></div>
         </div>
       </div>
+
+      <!-- SCRATCH EDITOR (writable textarea) -->
+      <textarea class="scratch-editor" id="scratchEditor"
+        placeholder="// scratch.c — write anything here"
+        spellcheck="false"></textarea>
 
       <!-- RESIZE HANDLE -->
       <div class="resizer" id="resizer">
@@ -437,21 +636,20 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
         <div class="output-body" id="outputBody"></div>
       </div>
 
-    </div><!-- /main-area -->
-  </div>
+    </div><!-- /workspace -->
 
-</div>
+    <!-- STATUS BAR -->
+    <div class="statusbar">
+      <div class="st"><div class="st-dot"></div> Ready</div>
+      <div class="st-sep">|</div>
+      <div class="st">Language: C</div>
+      <div class="st-sep">|</div>
+      <div class="st" id="stFile">main.c</div>
+      <div class="st-sep">|</div>
+      <div class="st" id="stMsg">Ln 1, Col 1</div>
+    </div>
 
-<!-- STATUS BAR -->
-<div class="statusbar">
-  <div class="st"><div class="st-dot"></div> Ready</div>
-  <div class="st-sep">|</div>
-  <div class="st">Language: C</div>
-  <div class="st-sep">|</div>
-  <div class="st" id="stFile">main.c</div>
-  <div class="st-sep">|</div>
-  <div class="st" id="stMsg">Ln 1, Col 1</div>
-</div>
+  </div><!-- /right-col -->
 
 </div><!-- /page -->
 
@@ -1217,6 +1415,125 @@ int main()
 out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued element = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]}
 };
 
+/* ══ NAV CLICK ══ */
+function navClick(el){
+  document.querySelectorAll('.sidebar-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ══ SCRATCH FILE ══ */
+let scratchMode=false;
+
+function openScratch(){
+  scratchMode=true;
+  document.getElementById('editorWrap').style.display='none';
+  const se=document.getElementById('scratchEditor');
+  se.style.display='block';
+  se.style.flex='1';
+  se.style.minHeight='0';
+  // seed with template only if empty
+  if(!se.value.trim()){
+    se.value = `#include <stdio.h>\n\nint main()\n{\n    \n    return 0;\n}`;
+    // place cursor at the blank line inside main
+    const pos = se.value.indexOf('    \n');
+    se.selectionStart = se.selectionEnd = pos + 4;
+  }
+  document.getElementById('fileTab').innerHTML='scratch.c &nbsp;&#10005;';
+  document.getElementById('stFile').textContent='scratch.c';
+  document.getElementById('stMsg').textContent='Editable — no output';
+  document.getElementById('outputBody').innerHTML='';
+  document.getElementById('progSel').value='';
+  se.focus();
+}
+
+function openEditor(){
+  scratchMode=false;
+  document.getElementById('scratchEditor').style.display='none';
+  document.getElementById('editorWrap').style.display='flex';
+}
+
+/* ══ SMART SCRATCH EDITOR ══ */
+document.getElementById('scratchEditor').addEventListener('keydown', function(e){
+  const ta = this;
+  const start = ta.selectionStart;
+  const end   = ta.selectionEnd;
+  const val   = ta.value;
+
+  /* ── TAB → 4 spaces ── */
+  if(e.key === 'Tab'){
+    e.preventDefault();
+    const spaces = '    ';
+    ta.value = val.substring(0,start) + spaces + val.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + 4;
+    return;
+  }
+
+  /* ── ENTER → auto-indent + brace handling ── */
+  if(e.key === 'Enter'){
+    e.preventDefault();
+
+    // find indent of current line
+    const lineStart = val.lastIndexOf('\n', start-1) + 1;
+    const currentLine = val.substring(lineStart, start);
+    const indent = currentLine.match(/^(\s*)/)[1];
+
+    const charBefore = val.substring(0, start).trimEnd().slice(-1);
+    const charAfter  = val[end] || '';
+
+    if(charBefore === '{' && charAfter === '}'){
+      // cursor is between { } → split with extra indent
+      const extra = indent + '    ';
+      const insert = '\n' + extra + '\n' + indent;
+      ta.value = val.substring(0,start) + insert + val.substring(end);
+      ta.selectionStart = ta.selectionEnd = start + 1 + extra.length;
+    } else {
+      // normal enter: keep indent, add extra if line ends with {
+      const addExtra = charBefore === '{' ? '    ' : '';
+      const insert = '\n' + indent + addExtra;
+      ta.value = val.substring(0,start) + insert + val.substring(end);
+      ta.selectionStart = ta.selectionEnd = start + insert.length;
+    }
+    return;
+  }
+
+  /* ── Auto-close pairs ── */
+  const pairs = { '{':'}', '(':')', '[':']', '"':'"', "'":"'" };
+  if(pairs[e.key]){
+    e.preventDefault();
+    const close = pairs[e.key];
+    // if text selected, wrap it
+    if(start !== end){
+      const selected = val.substring(start,end);
+      ta.value = val.substring(0,start) + e.key + selected + close + val.substring(end);
+      ta.selectionStart = start+1;
+      ta.selectionEnd   = end+1;
+    } else {
+      ta.value = val.substring(0,start) + e.key + close + val.substring(end);
+      ta.selectionStart = ta.selectionEnd = start+1;
+    }
+    return;
+  }
+
+  /* ── Skip over closing char if already there ── */
+  const closers = new Set(['}',')',']','"',"'"]);
+  if(closers.has(e.key) && val[start] === e.key){
+    e.preventDefault();
+    ta.selectionStart = ta.selectionEnd = start+1;
+    return;
+  }
+
+  /* ── Backspace: remove paired closer ── */
+  if(e.key === 'Backspace' && start === end && start > 0){
+    const open  = val[start-1];
+    const close = val[start];
+    const autoPairs = {'{':'}','(':')','[':']','"':'"',"'":"'"};    if(autoPairs[open] === close){
+      e.preventDefault();
+      ta.value = val.substring(0,start-1) + val.substring(start+1);
+      ta.selectionStart = ta.selectionEnd = start-1;
+    }
+  }
+});
+
 /* ══ SYNTAX ══ */
 function hl(r){
   let s=r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1253,7 +1570,8 @@ function syncGutter(){
 
 /* ══ LOAD PROGRAM ══ */
 function loadProg(idx){
-  if(!idx)return;
+  if(!idx) return;
+  openEditor();
   cur=P[idx];
   render(cur.code);
   document.getElementById('outputBody').innerHTML='';
@@ -1265,6 +1583,13 @@ function setActiveFile(el){
   document.querySelectorAll('.sidebar-file').forEach(f=>f.classList.remove('active'));
   el.classList.add('active');
 }
+/* nav item click highlight */
+document.querySelectorAll('.sidebar-nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.sidebar-nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
 
 /* ══ RUN ══ */
 let running=false,timer=null;
