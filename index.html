@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GDB online Debugger | Compiler - Code, Compile, Run, Debug online C, C++</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background:#fff;}
+
+/* ─── LOGIN OVERLAY ─── */
+#loginOverlay{
+  position:fixed;inset:0;z-index:9999;
+  background:#1a1a2e;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+}
+.login-box{
+  background:#16213e;
+  border:1px solid #0f3460;
+  border-radius:8px;
+  padding:40px 44px 36px;
+  width:360px;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.login-logo{
+  font-size:26px;font-weight:700;color:#fff;
+  margin-bottom:4px;letter-spacing:-.5px;
+}
+.login-logo span{color:#e91e63;font-weight:300;}
+.login-sub{
+  font-size:12px;color:#7f8fa6;margin-bottom:28px;
+  font-family:'Source Code Pro',monospace;letter-spacing:.04em;
+}
+.login-label{
+  width:100%;font-size:11.5px;color:#90a4ae;
+  margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;
+}
+.login-input{
+  width:100%;height:40px;background:#0f3460;
+  border:1px solid #1a4a8a;border-radius:4px;
+  color:#e0e0e0;font-size:14px;font-family:'Source Code Pro',monospace;
+  padding:0 14px;outline:none;margin-bottom:16px;
+  transition:border .2s,box-shadow .2s;
+}
+.login-input:focus{
+  border-color:#e91e63;
+  box-shadow:0 0 0 3px rgba(233,30,99,.15);
+}
+.login-input.error{
+  border-color:#ef5350;
+  animation:shake .35s ease;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+.login-btn{
+  width:100%;height:40px;background:#e91e63;border:none;
+  border-radius:4px;color:#fff;font-size:14px;font-weight:500;
+  font-family:'Roboto',sans-serif;cursor:pointer;
+  transition:background .2s,transform .1s;margin-top:4px;
+  letter-spacing:.03em;
+}
+.login-btn:hover{background:#c2185b;}
+.login-btn:active{transform:scale(.98);}
+.login-error{
+  font-size:12px;color:#ef5350;margin-top:12px;
+  text-align:center;height:16px;font-family:'Source Code Pro',monospace;
+}
+.login-hint{
+  font-size:11px;color:#37474f;margin-top:20px;
+  font-family:'Source Code Pro',monospace;text-align:center;
+}
+
+/* unlock animation */
+@keyframes unlockFade{
+  0%{opacity:1;transform:scale(1);}
+  60%{opacity:1;transform:scale(1.04);}
+  100%{opacity:0;transform:scale(.96);pointer-events:none;}
+}
+.unlocking{animation:unlockFade .5s ease forwards;}
+
+/* ─── TOP MENU BAR ─── */
+.topbar{
+  height:32px;background:#f5f5f5;border-bottom:1px solid #ddd;
+  display:flex;align-items:center;padding:0;flex-shrink:0;
+  font-size:13px;color:#333;
+}
+.tb-logo{
+  background:#e91e63;color:#fff;height:100%;
+  display:flex;align-items:center;padding:0 14px;
+  font-size:14px;font-weight:500;letter-spacing:.3px;white-space:nowrap;
+  flex-shrink:0;
+}
+.tb-logo span{color:#fce4ec;font-weight:300;font-size:12px;margin-left:1px;}
+.tb-menu-item{
+  padding:0 12px;height:100%;display:flex;align-items:center;
+  cursor:pointer;color:#444;font-size:12.5px;white-space:nowrap;
+  border-right:1px solid #e0e0e0;transition:background .15s;
+}
+.tb-menu-item:hover{background:#e8e8e8;}
+.tb-menu-item.active{background:#e3f2fd;color:#1565c0;}
+
+.tb-run-group{display:flex;align-items:center;height:100%;margin-left:4px;gap:3px;padding:0 6px;}
+.tb-run{
+  display:flex;align-items:center;gap:4px;
+  padding:3px 12px;border:none;border-radius:2px;
+  font-family:'Roboto',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;height:24px;
+}
+.btn-run{background:#4caf50;color:#fff;}
+.btn-run:hover{background:#43a047;}
+.btn-run.running{background:#e53935;animation:blink .6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.65}}
+.btn-debug{background:#2196f3;color:#fff;}
+.btn-debug:hover{background:#1976d2;}
+.btn-stop{background:#9e9e9e;color:#fff;}
+.btn-stop:hover{background:#757575;}
+
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:0;}
+.tb-right-item{
+  padding:0 12px;height:32px;display:flex;align-items:center;
+  font-size:12px;color:#555;cursor:pointer;border-left:1px solid #e0e0e0;
+}
+.tb-right-item:hover{background:#e8e8e8;}
+.btn-signup-top{background:#e91e63;color:#fff;border-radius:0;border-left:1px solid #c2185b;}
+.btn-signup-top:hover{background:#c2185b;}
+
+/* ─── SECOND TOOLBAR (language + beautify + share) ─── */
+.toolbar2{
+  height:34px;background:#fafafa;border-bottom:1px solid #e0e0e0;
+  display:flex;align-items:center;padding:0 0 0 4px;flex-shrink:0;gap:4px;
+}
+.t2-btn{
+  display:flex;align-items:center;gap:4px;padding:3px 10px;
+  border:1px solid #ccc;border-radius:2px;background:#fff;
+  font-size:12px;color:#444;cursor:pointer;height:24px;
+  font-family:'Roboto',sans-serif;transition:background .12s;
+}
+.t2-btn:hover{background:#f0f0f0;}
+.t2-select{
+  height:24px;border:1px solid #ccc;border-radius:2px;
+  background:#fff;font-size:12px;color:#333;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
+}
+.t2-filetab{
+  display:flex;align-items:center;gap:6px;
+  background:#fff;border:1px solid #ccc;border-bottom:none;
+  padding:3px 12px;font-size:12px;color:#333;
+  border-radius:2px 2px 0 0;cursor:pointer;
+  border-top:2px solid #4caf50;margin-left:4px;
+}
+.t2-prog-select{
+  margin-left:auto;margin-right:6px;
+  height:24px;border:1px solid #ccc;border-radius:2px;
+  background:#fffde7;font-size:11.5px;color:#555;padding:0 6px;
+  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;
+  max-width:260px;
+}
+
+/* ─── BODY LAYOUT: left sidebar + editor ─── */
+.body-wrap{
+  flex:1;display:flex;overflow:hidden;min-height:0;
+}
+
+/* ─── LEFT SIDEBAR ─── */
+.sidebar{
+  width:200px;flex-shrink:0;background:#eceff1;
+  border-right:1px solid #cfd8dc;display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sidebar-head{
+  background:#b0bec5;padding:6px 10px;font-size:11.5px;font-weight:500;
+  color:#263238;letter-spacing:.03em;border-bottom:1px solid #90a4ae;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sidebar-add{
+  width:18px;height:18px;background:#546e7a;border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:14px;cursor:pointer;line-height:1;
+}
+.sidebar-add:hover{background:#37474f;}
+.sidebar-file{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;font-size:12.5px;color:#263238;cursor:pointer;
+  border-bottom:1px solid #dde;transition:background .12s;
+}
+.sidebar-file:hover{background:#dde3e7;}
+.sidebar-file.active{background:#c5cae9;color:#283593;}
+.file-icon{font-size:13px;color:#607d8b;}
+.sidebar-file.active .file-icon{color:#3949ab;}
+
+.sidebar-section{
+  padding:4px 10px 2px;font-size:10.5px;color:#78909c;
+  font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:1px solid #cfd8dc;background:#e0e5e8;
+}
+
+/* ─── MAIN EDITOR + OUTPUT ─── */
+.main-area{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;
+}
+
+/* ─── EDITOR ─── */
+.editor-wrap{
+  flex:1;display:flex;overflow:hidden;min-height:0;
+  background:#1e1e1e;
+}
+.line-gutter{
+  background:#1e1e1e;width:44px;flex-shrink:0;
+  border-right:1px solid #2d2d2d;overflow:hidden;
+  padding-top:2px;
+}
+.lnum{
+  height:19px;line-height:19px;text-align:right;padding-right:10px;
+  font-family:'Source Code Pro',monospace;font-size:13px;
+  color:#3d3d3d;user-select:none;
+}
+.code-scroll{
+  flex:1;overflow:auto;background:#1e1e1e;
+}
+.code-scroll::-webkit-scrollbar{width:10px;height:10px;}
+.code-scroll::-webkit-scrollbar-track{background:#1a1a1a;}
+.code-scroll::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
+.code-scroll::-webkit-scrollbar-corner{background:#1a1a1a;}
+.code-inner{padding:2px 0 24px 14px;min-width:max-content;}
+.cl{
+  height:19px;line-height:19px;font-family:'Source Code Pro',monospace;
+  font-size:13px;white-space:pre;display:block;color:#d4d4d4;
+}
+.cl:hover{background:rgba(255,255,255,.03);}
+
+/* syntax */
+.kw{color:#569cd6;}
+.pp{color:#c586c0;}
+.fn{color:#dcdcaa;}
+.str{color:#ce9178;}
+.num{color:#b5cea8;}
+.cmt{color:#6a9955;font-style:italic;}
+.mac{color:#9cdcfe;}
+.ty{color:#4ec9b0;}
+
+/* ─── RESIZE HANDLE ─── */
+.resizer{
+  height:5px;background:#e0e0e0;cursor:row-resize;flex-shrink:0;
+  border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd;
+  display:flex;align-items:center;justify-content:center;
+}
+.resizer-grip{color:#9e9e9e;font-size:9px;letter-spacing:2px;}
+
+/* ─── OUTPUT PANEL ─── */
+.output-panel{
+  height:220px;flex-shrink:0;display:flex;flex-direction:column;
+  background:#1a1a1a;
+}
+.out-tabs{
+  background:#252526;border-bottom:1px solid #333;
+  display:flex;flex-shrink:0;
+}
+.out-tab{
+  padding:5px 16px;font-size:12.5px;color:#888;cursor:pointer;
+  border-right:1px solid #333;transition:all .12s;
+}
+.out-tab:hover{color:#bbb;background:rgba(255,255,255,.04);}
+.out-tab.active{color:#4caf50;border-bottom:2px solid #4caf50;background:rgba(76,175,80,.06);}
+
+.stdin-strip{
+  background:#1e1e1e;padding:3px 12px;display:flex;align-items:center;
+  gap:14px;flex-shrink:0;border-bottom:1px solid #2d2d2d;
+}
+.stdin-strip label{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;color:#888;}
+.stdin-strip input[type=radio]{accent-color:#4caf50;cursor:pointer;}
+
+.output-body{
+  flex:1;overflow-y:auto;padding:6px 14px;
+  font-family:'Source Code Pro',monospace;font-size:13.5px;
+  line-height:1.6;color:#ccc;
+}
+.output-body::-webkit-scrollbar{width:8px;}
+.output-body::-webkit-scrollbar-track{background:#111;}
+.output-body::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:4px;}
+.ol{display:block;white-space:pre-wrap;}
+.o-info{color:#546e7a;font-style:italic;}
+.o-prompt{color:#4caf50;}
+.o-input{color:#64b5f6;}
+.o-err{color:#ef5350;}
+
+/* ─── STATUS BAR ─── */
+.statusbar{
+  height:22px;background:#007acc;display:flex;align-items:center;
+  padding:0 12px;gap:14px;flex-shrink:0;
+}
+.st{font-size:11.5px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:4px;}
+.st-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;}
+.st-sep{color:rgba(255,255,255,.3);}
+
+/* ─── PAGE ─── */
+.page{height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+</style>
+</head>
+<body>
+<!-- ─── LOGIN OVERLAY ─── -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">GDB<span>online</span></div>
+    <div class="login-sub">// secure access required</div>
+    <div class="login-label">Username</div>
+    <input class="login-input" id="loginUser" type="text" placeholder="enter username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div class="login-label">Password</div>
+    <input class="login-input" id="loginPass" type="password" placeholder="enter password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">Unlock IDE</button>
+    <div class="login-error" id="loginErr"></div>
+    <div class="login-hint">hint: you know who you are 😉</div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- TOP MENU BAR -->
+<div class="topbar">
+  <div class="tb-logo">GDB<span>online</span></div>
+  <div class="tb-menu-item active">Editor</div>
+  <div class="tb-menu-item">My Projects</div>
+  <div class="tb-menu-item">Classroom</div>
+  <div class="tb-menu-item">Learn</div>
+  <div class="tb-menu-item">Questions</div>
+
+  <div class="tb-run-group">
+    <button class="tb-run btn-run" id="runBtn" onclick="runCode()">&#9654; Run</button>
+    <button class="tb-run btn-debug">&#x1F41E; Debug</button>
+    <button class="tb-run btn-stop" onclick="stopCode()">&#9632; Stop</button>
+  </div>
+
+  <div class="tb-right">
+    <div class="tb-right-item">Sign In</div>
+    <div class="tb-right-item btn-signup-top">Sign Up</div>
+  </div>
+</div>
+
+<!-- SECOND TOOLBAR -->
+<div class="toolbar2">
+  <button class="t2-btn" onclick="doBeautify()">&#10022; Beautify</button>
+  <button class="t2-btn">&#128190; Save</button>
+  <button class="t2-btn">&#128279; Share</button>
+  <div style="width:1px;height:20px;background:#ddd;margin:0 4px;"></div>
+  <select class="t2-select" id="langSel">
+    <option selected>C</option>
+    <option>C++</option><option>C++ 14</option><option>C++ 17</option>
+    <option>Python 3</option><option>Java</option><option>Kotlin</option>
+    <option>C#</option><option>PHP</option><option>Go</option>
+  </select>
+  <div class="t2-filetab" id="fileTab">main.c &nbsp;&#10005;</div>
+  <select class="t2-prog-select" id="progSel" onchange="loadProg(this.value)">
+    <option value="">&#128193; Load program&#8230;</option>
+    <option value="1">01 &bull; Insert at Position (Array)</option>
+    <option value="2">02 &bull; Delete at Position (Array)</option>
+    <option value="3">03 &bull; Factorial via Recursion</option>
+    <option value="4">04 &bull; Stack &ndash; Push</option>
+    <option value="5">05 &bull; Stack &ndash; Pop</option>
+    <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
+    <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
+    <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
+    <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
+  </select>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+
+  <div style="flex:1;display:flex;overflow:hidden;min-height:0;">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-head">
+        Files
+        <div class="sidebar-add">+</div>
+      </div>
+      <div class="sidebar-section">Project</div>
+      <div class="sidebar-file active" onclick="setActiveFile(this)">
+        <span class="file-icon">&#128196;</span> main.c
+      </div>
+      <div class="sidebar-section" style="margin-top:4px;">Recent</div>
+      <div class="sidebar-file" onclick="loadProg(1);setActiveFile(this)"><span class="file-icon">&#128196;</span> insert.c</div>
+      <div class="sidebar-file" onclick="loadProg(2);setActiveFile(this)"><span class="file-icon">&#128196;</span> delete.c</div>
+      <div class="sidebar-file" onclick="loadProg(3);setActiveFile(this)"><span class="file-icon">&#128196;</span> factorial.c</div>
+      <div class="sidebar-file" onclick="loadProg(4);setActiveFile(this)"><span class="file-icon">&#128196;</span> push.c</div>
+      <div class="sidebar-file" onclick="loadProg(5);setActiveFile(this)"><span class="file-icon">&#128196;</span> pop.c</div>
+      <div class="sidebar-file" onclick="loadProg(6);setActiveFile(this)"><span class="file-icon">&#128196;</span> enqueue.c</div>
+      <div class="sidebar-file" onclick="loadProg(7);setActiveFile(this)"><span class="file-icon">&#128196;</span> dequeue.c</div>
+      <div class="sidebar-file" onclick="loadProg(8);setActiveFile(this)"><span class="file-icon">&#128196;</span> c_enqueue.c</div>
+      <div class="sidebar-file" onclick="loadProg(9);setActiveFile(this)"><span class="file-icon">&#128196;</span> c_dequeue.c</div>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="main-area">
+
+      <!-- EDITOR -->
+      <div class="editor-wrap">
+        <div class="line-gutter" id="lineGutter"></div>
+        <div class="code-scroll" id="codeScroll" onscroll="syncGutter()">
+          <div class="code-inner" id="codeInner"></div>
+        </div>
+      </div>
+
+      <!-- RESIZE HANDLE -->
+      <div class="resizer" id="resizer">
+        <span class="resizer-grip">&#8226; &#8226; &#8226; &#8226; &#8226;</span>
+      </div>
+
+      <!-- OUTPUT PANEL -->
+      <div class="output-panel" id="outputPanel">
+        <div class="out-tabs">
+          <div class="out-tab active">Output</div>
+          <div class="out-tab">Input</div>
+          <div class="out-tab">Debug</div>
+        </div>
+        <div class="stdin-strip">
+          <label><input type="radio" name="stdin" checked/> Interactive Console</label>
+          <label><input type="radio" name="stdin"/> Text Input</label>
+        </div>
+        <div class="output-body" id="outputBody"></div>
+      </div>
+
+    </div><!-- /main-area -->
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="st"><div class="st-dot"></div> Ready</div>
+  <div class="st-sep">|</div>
+  <div class="st">Language: C</div>
+  <div class="st-sep">|</div>
+  <div class="st" id="stFile">main.c</div>
+  <div class="st-sep">|</div>
+  <div class="st" id="stMsg">Ln 1, Col 1</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+/* ════════════════════════════════
+   PROGRAM DATA
+════════════════════════════════ */
+const P={
+1:{f:"main.c",code:`/******************************************************************************
+ * Program : Insertion at a specific position in an array
+ * Topic   : Arrays | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+
+#define MAX_SIZE 100
+
+void insertAtPosition(int arr[], int *size, int element, int position)
+{
+    if (*size >= MAX_SIZE)
+    {
+        printf("Error: Array is full.\\n");
+        return;
+    }
+
+    if (position < 1 || position > *size + 1)
+    {
+        printf("Error: Invalid position.\\n");
+        return;
+    }
+
+    for (int i = *size; i >= position; i--)
+    {
+        arr[i] = arr[i - 1];
+    }
+
+    arr[position - 1] = element;
+    (*size)++;
+
+    printf("Inserted %d at position %d.\\n", element, position);
+}
+
+void displayArray(int arr[], int size)
+{
+    if (size == 0)
+    {
+        printf("Array is empty.\\n");
+        return;
+    }
+
+    printf("Array elements: ");
+    for (int i = 0; i < size; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\\n");
+}
+
+int main()
+{
+    int arr[MAX_SIZE];
+    int size = 0;
+    int choice, element, position;
+
+    while (1)
+    {
+        printf("\\nMenu:\\n");
+        printf("1. Insert element\\n");
+        printf("2. Display array\\n");
+        printf("3. Exit\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input. Exiting.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter element: ");
+            scanf("%d", &element);
+            printf("Enter position (1 to %d): ", size + 1);
+            scanf("%d", &position);
+            insertAtPosition(arr, &size, element, position);
+            break;
+        case 2:
+            displayArray(arr, size);
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            return 0;
+        default:
+            printf("Invalid choice.\\n");
+        }
+    }
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'25'},{t:'p',s:'Enter position (1 to 1): '},{t:'u',s:'1'},{t:'o',s:'Inserted 25 at position 1.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 25 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.003 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+2:{f:"main.c",code:`/******************************************************************************
+ * Program : Deletion at a specific position in an array
+ * Topic   : Arrays | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+
+#define MAX_SIZE 10
+
+void deleteAtPosition(int arr[], int *size, int position)
+{
+    if (*size == 0)
+    {
+        printf("Error: Array is empty.\\n");
+        return;
+    }
+
+    if (position < 1 || position > *size)
+    {
+        printf("Error: Invalid position.\\n");
+        return;
+    }
+
+    int deleted = arr[position - 1];
+
+    for (int i = position - 1; i < *size - 1; i++)
+    {
+        arr[i] = arr[i + 1];
+    }
+
+    (*size)--;
+
+    printf("Deleted element: %d\\n", deleted);
+}
+
+void displayArray(int arr[], int size)
+{
+    if (size == 0)
+    {
+        printf("Array is empty.\\n");
+        return;
+    }
+
+    printf("Array elements: ");
+    for (int i = 0; i < size; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\\n");
+}
+
+int main()
+{
+    int arr[MAX_SIZE] = {10,20,30,40,50,60,70,80,90,100};
+    int size = 10;
+    int choice, position;
+
+    while (1)
+    {
+        printf("\\nMenu:\\n");
+        printf("1. Delete element\\n");
+        printf("2. Display array\\n");
+        printf("3. Exit\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input. Exiting.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter position (1 to %d): ", size);
+            scanf("%d", &position);
+            deleteAtPosition(arr, &size, position);
+            break;
+        case 2:
+            displayArray(arr, size);
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            return 0;
+        default:
+            printf("Invalid choice.\\n");
+        }
+    }
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Delete element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 50 60 70 80 90 100 '},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter position (1 to 10): '},{t:'u',s:'5'},{t:'o',s:'Deleted element: 50'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 60 70 80 90 100 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+3:{f:"main.c",code:`/******************************************************************************
+ * Program : Factorial using Recursion
+ * Topic   : Recursion | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+
+long long factorial(int n)
+{
+    if (n < 0)
+    {
+        return -1;
+    }
+
+    if (n == 0 || n == 1)
+    {
+        return 1;
+    }
+
+    return n * factorial(n - 1);
+}
+
+int main()
+{
+    int num;
+
+    printf("Enter a number: ");
+
+    if (scanf("%d", &num) != 1)
+    {
+        printf("Invalid input.\\n");
+        return 0;
+    }
+
+    long long result = factorial(num);
+
+    if (result == -1)
+    {
+        printf("Factorial not defined for negative numbers.\\n");
+    }
+    else
+    {
+        printf("Factorial of %d is: %lld\\n", num, result);
+    }
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'p',s:'Enter a number: '},{t:'u',s:'7'},{t:'o',s:'Factorial of 7 is: 5040'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.001 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+4:{f:"main.c",code:`/******************************************************************************
+ * Program : Push and Display on a Stack using Array
+ * Topic   : Stack | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define SIZE 5
+
+int top = -1;
+int STK[SIZE];
+
+int isfull()
+{
+    return (top == SIZE - 1);
+}
+
+int isempty()
+{
+    return (top == -1);
+}
+
+void push(int val)
+{
+    if (isfull())
+    {
+        printf("----- Stack is FULL -----\\n");
+    }
+    else
+    {
+        top++;
+        STK[top] = val;
+        printf("Pushed %d into stack.\\n", val);
+    }
+}
+
+void display()
+{
+    if (isempty())
+    {
+        printf("----- Stack is EMPTY -----\\n");
+    }
+    else
+    {
+        printf("Stack contents (top to bottom):\\n");
+        for (int i = top; i >= 0; i--)
+        {
+            printf("%d\\n", STK[i]);
+        }
+    }
+}
+
+int main()
+{
+    int choice, val;
+
+    do
+    {
+        printf("\\n---------------------------------\\n");
+        printf("1. Push\\n2. Display\\n3. Exit\\n");
+        printf("---------------------------------\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter value: ");
+            scanf("%d", &val);
+            push(val);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            break;
+        default:
+            printf("Invalid choice.\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Push'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'10'},{t:'o',s:'Pushed 10 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'20'},{t:'o',s:'Pushed 20 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+5:{f:"main.c",code:`/******************************************************************************
+ * Program : Pop and Display on a Stack using Array
+ * Topic   : Stack | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define SIZE 5
+
+int top = 4;
+int STK[SIZE] = {10, 20, 30, 50, 40};
+
+int isempty()
+{
+    return (top == -1);
+}
+
+int pop()
+{
+    if (isempty())
+    {
+        printf("----- Stack is EMPTY -----\\n");
+        return -1;
+    }
+    else
+    {
+        int val = STK[top];
+        top--;
+        return val;
+    }
+}
+
+void display()
+{
+    if (isempty())
+    {
+        printf("----- Stack is EMPTY -----\\n");
+    }
+    else
+    {
+        printf("Stack contents (top to bottom):\\n");
+        for (int i = top; i >= 0; i--)
+        {
+            printf("%d\\n", STK[i]);
+        }
+    }
+}
+
+int main()
+{
+    int choice, val;
+
+    do
+    {
+        printf("\\n---------------------------------\\n");
+        printf("1. Pop\\n2. Display\\n3. Exit\\n");
+        printf("---------------------------------\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            val = pop();
+            if (val != -1)
+                printf("Popped value = %d\\n", val);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            break;
+        default:
+            printf("Invalid choice.\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Pop'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'40'},{t:'o',s:'50'},{t:'o',s:'30'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Popped value = 40'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+6:{f:"main.c",code:`/******************************************************************************
+ * Program : Enqueue - Array Implementation of Linear Queue
+ * Topic   : Queue | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define SIZE 5
+
+int rear = -1;
+int front = 0;
+int que[SIZE];
+
+int isquefull()
+{
+    return (rear == SIZE - 1);
+}
+
+int isqueempty()
+{
+    return (front > rear);
+}
+
+void enqueue(int val)
+{
+    if (isquefull())
+    {
+        printf("----- Queue is FULL -----\\n");
+    }
+    else
+    {
+        rear++;
+        que[rear] = val;
+        printf("Inserted %d into queue.\\n", val);
+    }
+}
+
+void display()
+{
+    if (isqueempty())
+    {
+        printf("----- Queue is EMPTY -----\\n");
+    }
+    else
+    {
+        printf("Queue contents:\\n");
+        for (int i = front; i <= rear; i++)
+        {
+            printf("%d\\n", que[i]);
+        }
+    }
+}
+
+int main()
+{
+    int choice, val;
+
+    do
+    {
+        printf("\\n-------------------------\\n");
+        printf("1. Enqueue\\n2. Display\\n3. Exit\\n");
+        printf("-------------------------\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter value: ");
+            scanf("%d", &val);
+            enqueue(val);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            break;
+        default:
+            printf("Invalid choice.\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'100'},{t:'o',s:'Inserted 100 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'200'},{t:'o',s:'Inserted 200 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+7:{f:"main.c",code:`/******************************************************************************
+ * Program : Dequeue - Array Implementation of Linear Queue
+ * Topic   : Queue | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define SIZE 5
+
+int rear = 4;
+int front = 0;
+int que[SIZE] = {100, 200, 300, 400, 500};
+
+int isqueempty()
+{
+    return (front > rear);
+}
+
+int dequeue()
+{
+    if (isqueempty())
+    {
+        printf("----- Queue is EMPTY -----\\n");
+        return -1;
+    }
+    else
+    {
+        int val = que[front];
+        front++;
+        return val;
+    }
+}
+
+void display()
+{
+    if (isqueempty())
+    {
+        printf("----- Queue is EMPTY -----\\n");
+    }
+    else
+    {
+        printf("Queue contents:\\n");
+        for (int i = front; i <= rear; i++)
+        {
+            printf("%d\\n", que[i]);
+        }
+    }
+}
+
+int main()
+{
+    int choice, val;
+
+    do
+    {
+        printf("\\n-------------------------\\n");
+        printf("1. Dequeue\\n2. Display\\n3. Exit\\n");
+        printf("-------------------------\\n");
+        printf("Enter your choice: ");
+
+        if (scanf("%d", &choice) != 1)
+        {
+            printf("Invalid input.\\n");
+            return 0;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            val = dequeue();
+            if (val != -1)
+                printf("Dequeued value = %d\\n", val);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting program.\\n");
+            break;
+        default:
+            printf("Invalid choice.\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued value = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+8:{f:"main.c",code:`/******************************************************************************
+ * Program : Enqueue on a Circular Queue using Array
+ * Topic   : Circular Queue | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define MAX 6
+
+int queue[MAX];
+int front = -1;
+int rear = -1;
+
+void enqueue(int element)
+{
+    if ((rear + 1) % MAX == front)
+    {
+        printf("Queue is FULL\\n");
+    }
+    else if (front == -1 && rear == -1)
+    {
+        front = rear = 0;
+        queue[rear] = element;
+    }
+    else
+    {
+        rear = (rear + 1) % MAX;
+        queue[rear] = element;
+    }
+}
+
+void display()
+{
+    if (front == -1 && rear == -1)
+    {
+        printf("Queue is EMPTY\\n");
+    }
+    else
+    {
+        int i = front;
+        printf("Queue elements:\\n");
+        while (1)
+        {
+            printf("%d\\n", queue[i]);
+            if (i == rear)
+                break;
+            i = (i + 1) % MAX;
+        }
+    }
+}
+
+int main()
+{
+    int choice, x;
+
+    do
+    {
+        printf("\\n1. Enqueue\\n2. Display\\n3. Exit\\n");
+        printf("Enter choice: ");
+
+        if (scanf("%d", &choice) != 1)
+            return 0;
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter element: ");
+            scanf("%d", &x);
+            enqueue(x);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting...\\n");
+            break;
+        default:
+            printf("Invalid choice\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'10'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'20'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'30'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'10'},{t:'o',s:'20'},{t:'o',s:'30'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
+
+9:{f:"main.c",code:`/******************************************************************************
+ * Program : Dequeue on a Circular Queue using Array
+ * Topic   : Circular Queue | Data Structures Lab
+ ******************************************************************************/
+#include <stdio.h>
+#define MAX 6
+
+int queue[MAX] = {100, 200, 300, 400, 500};
+
+int front = 0;
+int rear = 4;
+
+int dequeue()
+{
+    if (front == -1 && rear == -1)
+    {
+        printf("Queue is EMPTY\\n");
+        return -1;
+    }
+    else if (front == rear)
+    {
+        int val = queue[front];
+        front = -1;
+        rear = -1;
+        return val;
+    }
+    else
+    {
+        int val = queue[front];
+        front = (front + 1) % MAX;
+        return val;
+    }
+}
+
+void display()
+{
+    if (front == -1 && rear == -1)
+    {
+        printf("Queue is EMPTY\\n");
+    }
+    else
+    {
+        int i = front;
+        printf("Queue elements:\\n");
+        while (1)
+        {
+            printf("%d\\n", queue[i]);
+            if (i == rear)
+                break;
+            i = (i + 1) % MAX;
+        }
+    }
+}
+
+int main()
+{
+    int choice, val;
+
+    do
+    {
+        printf("\\n1. Dequeue\\n2. Display\\n3. Exit\\n");
+        printf("Enter choice: ");
+
+        if (scanf("%d", &choice) != 1)
+            return 0;
+
+        switch (choice)
+        {
+        case 1:
+            val = dequeue();
+            if (val != -1)
+                printf("Dequeued element = %d\\n", val);
+            break;
+        case 2:
+            display();
+            break;
+        case 3:
+            printf("Exiting...\\n");
+            break;
+        default:
+            printf("Invalid choice\\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}`,
+out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued element = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]}
+};
+
+/* ══ SYNTAX ══ */
+function hl(r){
+  let s=r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if(/^\s*(\/\/|\/\*|\*)/.test(s))return`<span class="cmt">${s}</span>`;
+  s=s.replace(/(#\s*(?:include|define|ifndef|endif|pragma)\b[^\n]*)/g,'<span class="pp">$1</span>');
+  ['return','if','else','while','do','for','switch','case','break','default',
+   'void','int','long','char','float','double','unsigned','static','const','struct','typedef']
+  .forEach(k=>{s=s.replace(new RegExp(`\\b(${k})\\b`,'g'),'<span class="kw">$1</span>');});
+  s=s.replace(/\b(MAX_SIZE|SIZE|MAX|NULL)\b/g,'<span class="mac">$1</span>');
+  s=s.replace(/("(?:[^"\\]|\\.)*")/g,'<span class="str">$1</span>');
+  s=s.replace(/\b(\d+)\b/g,'<span class="num">$1</span>');
+  s=s.replace(/\b([a-zA-Z_]\w*)\s*(?=\s*\()/g,'<span class="fn">$1</span>');
+  return s;
+}
+
+/* ══ RENDER CODE ══ */
+let cur=null;
+function render(code){
+  const lines=code.split('\n');
+  const ci=document.getElementById('codeInner');
+  const lg=document.getElementById('lineGutter');
+  ci.innerHTML='';lg.innerHTML='';
+  lines.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='cl';
+    d.innerHTML=l===''?'\u200b':hl(l);ci.appendChild(d);
+    const n=document.createElement('div');n.className='lnum';
+    n.textContent=i+1;lg.appendChild(n);
+  });
+}
+function syncGutter(){
+  document.getElementById('lineGutter').scrollTop=
+  document.getElementById('codeScroll').scrollTop;
+}
+
+/* ══ LOAD PROGRAM ══ */
+function loadProg(idx){
+  if(!idx)return;
+  cur=P[idx];
+  render(cur.code);
+  document.getElementById('outputBody').innerHTML='';
+  document.getElementById('fileTab').innerHTML=cur.f+'&nbsp;&#10005;';
+  document.getElementById('stFile').textContent=cur.f;
+  document.getElementById('stMsg').textContent='Loaded';
+}
+function setActiveFile(el){
+  document.querySelectorAll('.sidebar-file').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ══ RUN ══ */
+let running=false,timer=null;
+function runCode(){
+  if(running)return;
+  if(!cur){addLine({t:'e',s:'No program loaded.'});return;}
+  running=true;
+  const btn=document.getElementById('runBtn');
+  btn.classList.add('running');btn.innerHTML='&#9632; Running...';
+  document.getElementById('outputBody').innerHTML='';
+  document.getElementById('stMsg').textContent='Compiling...';
+  setTimeout(()=>{
+    document.getElementById('stMsg').textContent='Running...';
+    play(cur.out,0,()=>{
+      running=false;btn.classList.remove('running');
+      btn.innerHTML='&#9654; Run';
+      document.getElementById('stMsg').textContent='Finished';
+    });
+  },450);
+}
+function play(lines,i,done){
+  if(i>=lines.length){done();return;}
+  addLine(lines[i]);
+  timer=setTimeout(()=>play(lines,i+1,done),
+    lines[i].t==='u'?190:lines[i].t==='i'?60:45);
+}
+function addLine(line){
+  const ob=document.getElementById('outputBody');
+  const sp=document.createElement('span');sp.className='ol';
+  const s=esc(line.s);
+  if(line.t==='i')sp.innerHTML=`<span class="o-info">${s}</span>\n`;
+  else if(line.t==='p')sp.innerHTML=`<span class="o-prompt">${s}</span>`;
+  else if(line.t==='u')sp.innerHTML=`<span class="o-input">${s}</span>\n`;
+  else if(line.t==='e')sp.innerHTML=`<span class="o-err">${s}</span>\n`;
+  else sp.innerHTML=s+'\n';
+  ob.appendChild(sp);ob.scrollTop=ob.scrollHeight;
+}
+function stopCode(){
+  if(timer)clearTimeout(timer);running=false;
+  const btn=document.getElementById('runBtn');
+  btn.classList.remove('running');btn.innerHTML='&#9654; Run';
+  document.getElementById('stMsg').textContent='Stopped';
+  addLine({t:'e',s:'[Process terminated by user]'});
+}
+function doBeautify(){
+  if(!cur)return;
+  const ci=document.getElementById('codeInner');
+  ci.style.opacity='0';ci.style.transition='opacity .15s';
+  setTimeout(()=>{render(cur.code);ci.style.opacity='1';
+  document.getElementById('stMsg').textContent='Beautified';},160);
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ══ DRAG RESIZE ══ */
+const rz=document.getElementById('resizer');
+const op=document.getElementById('outputPanel');
+let dr=false,sy=0,sh=0;
+rz.addEventListener('mousedown',e=>{dr=true;sy=e.clientY;sh=op.offsetHeight;document.body.style.userSelect='none';});
+window.addEventListener('mousemove',e=>{if(!dr)return;op.style.height=Math.max(80,Math.min(550,sh+(sy-e.clientY)))+'px';});
+window.addEventListener('mouseup',()=>{dr=false;document.body.style.userSelect='';});
+
+/* ══ INIT ══ */
+loadProg(1);
+document.getElementById('progSel').value='1';
+
+/* ══ LOGIN ══ */
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value.trim();
+  const err=document.getElementById('loginErr');
+  const ui=document.getElementById('loginUser');
+  const pi=document.getElementById('loginPass');
+  if(u==='manas'&&p==='manas'){
+    err.textContent='';
+    const ov=document.getElementById('loginOverlay');
+    ov.classList.add('unlocking');
+    setTimeout(()=>ov.style.display='none',480);
+  } else {
+    err.textContent='⚠ incorrect credentials — try again';
+    ui.classList.add('error');pi.classList.add('error');
+    setTimeout(()=>{ui.classList.remove('error');pi.classList.remove('error');},400);
+    document.getElementById('loginPass').value='';
+    document.getElementById('loginUser').focus();
+  }
+}
+/* focus username on load */
+document.getElementById('loginUser').focus();
+</script>
+</body>
+</html>
