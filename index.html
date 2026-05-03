@@ -248,11 +248,20 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
 
 /* ─── RESIZE HANDLE ─── */
 .resizer{
-  height:5px;background:#e0e0e0;cursor:row-resize;flex-shrink:0;
+  height:20px;background:#d6d6d6;cursor:row-resize;flex-shrink:0;
   border-top:1px solid #bdbdbd;border-bottom:1px solid #bdbdbd;
   display:flex;align-items:center;justify-content:center;
+  position:relative;
 }
-.resizer-grip{color:#9e9e9e;font-size:9px;letter-spacing:2px;}
+.resizer-grip{color:#aaa;font-size:9px;letter-spacing:3px;}
+.resizer-toggle{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  width:22px;height:16px;background:#9e9e9e;border:none;border-radius:3px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  gap:4px;font-size:10px;color:#fff;font-family:'Roboto',sans-serif;
+  font-weight:500;transition:background .15s;user-select:none;letter-spacing:.02em;
+}
+.resizer-toggle:hover{background:#607d8b;}
 
 /* ─── OUTPUT PANEL ─── */
 .output-panel{
@@ -411,6 +420,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto',sans-serif;background
       <!-- RESIZE HANDLE -->
       <div class="resizer" id="resizer">
         <span class="resizer-grip">&#8226; &#8226; &#8226; &#8226; &#8226;</span>
+        <button class="resizer-toggle" id="toggleBtn" onclick="togglePanel(event)">&#9650;</button>
       </div>
 
       <!-- OUTPUT PANEL -->
@@ -1312,9 +1322,58 @@ function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace
 const rz=document.getElementById('resizer');
 const op=document.getElementById('outputPanel');
 let dr=false,sy=0,sh=0;
-rz.addEventListener('mousedown',e=>{dr=true;sy=e.clientY;sh=op.offsetHeight;document.body.style.userSelect='none';});
-window.addEventListener('mousemove',e=>{if(!dr)return;op.style.height=Math.max(80,Math.min(550,sh+(sy-e.clientY)))+'px';});
+
+rz.addEventListener('mousedown',e=>{
+  if(e.target.id==='toggleBtn')return;
+  dr=true;sy=e.clientY;sh=op.offsetHeight;
+  document.body.style.userSelect='none';
+});
+window.addEventListener('mousemove',e=>{
+  if(!dr)return;
+  const newH=Math.max(80,Math.min(maxPanelHeight(),sh+(sy-e.clientY)));
+  op.style.height=newH+'px';
+  op.style.transition='none';
+  updateToggleBtn(newH);
+});
 window.addEventListener('mouseup',()=>{dr=false;document.body.style.userSelect='';});
+
+/* max height = workspace height minus toolbar rows minus resizer */
+function maxPanelHeight(){
+  const mainArea=document.querySelector('.main-area');
+  return mainArea.offsetHeight - 20 - 10; /* leave tiny sliver for resizer+editor */
+}
+
+let expanded=false;
+const SMALL_H=220;
+
+function togglePanel(e){
+  e.stopPropagation();
+  const btn=document.getElementById('toggleBtn');
+  op.style.transition='height .3s cubic-bezier(.4,0,.2,1)';
+  if(!expanded){
+    /* expand: fill up to just below the two toolbars */
+    const mainArea=document.querySelector('.main-area');
+    const bigH=mainArea.offsetHeight-24; /* 24px = leave resizer visible */
+    op.style.height=bigH+'px';
+    btn.innerHTML='&#9660;';
+    expanded=true;
+  } else {
+    op.style.height=SMALL_H+'px';
+    btn.innerHTML='&#9650;';
+    expanded=false;
+  }
+}
+
+function updateToggleBtn(h){
+  const btn=document.getElementById('toggleBtn');
+  const mainArea=document.querySelector('.main-area');
+  const bigH=mainArea.offsetHeight-24;
+  if(h>=bigH-10){
+    expanded=true;btn.innerHTML='&#9660;';
+  } else {
+    expanded=false;btn.innerHTML='&#9650;';
+  }
+}
 
 /* ══ INIT ══ */
 loadProg(1);
