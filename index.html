@@ -1,1603 +1,1560 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<title>GDB online Debugger | Compiler - Code, Compile, Run, Debug online C, C++</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applied Physics — Laser & Fibre Optics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&family=IBM+Plex+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;overflow:hidden;font-family:'Roboto',Arial,sans-serif;font-size:14px;}
+  :root {
+    --bg: #06070f;
+    --surface: #0d0f1e;
+    --card: #111426;
+    --border: #1e2240;
+    --accent1: #00f5d4;
+    --accent2: #f72585;
+    --accent3: #7209b7;
+    --accent4: #4cc9f0;
+    --accent5: #ffd60a;
+    --text: #e8eaf6;
+    --muted: #6b7280;
+    --laser-red: #ff3838;
+    --laser-green: #39ff14;
+    --photon: #ffe259;
+  }
 
-/* ═══════════════════════════════
-   LOGIN OVERLAY
-═══════════════════════════════ */
-#loginOverlay{
-  position:fixed;inset:0;z-index:9999;
-  background:#0d1b2a;
-  display:flex;align-items:center;justify-content:center;
-}
-.login-box{
-  background:#125792;border:1px solid #1a6fac;border-radius:6px;
-  padding:36px 44px 32px;width:360px;
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-  display:flex;flex-direction:column;align-items:center;
-}
-.login-logo{
-  font-size:24px;font-weight:700;color:#fff;margin-bottom:4px;
-  display:flex;align-items:center;gap:6px;
-}
-.login-logo .flash{
-  border:3px solid #fff;padding:4px 6px;font-size:14px;
-}
-.login-sub{font-size:11px;color:#94c5ee;margin-bottom:26px;font-style:italic;}
-.login-label{width:100%;font-size:11px;color:#ccd7dd;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}
-.login-input{
-  width:100%;height:36px;background:#0f3a5f;border:1px solid #1a6fac;
-  border-radius:3px;color:#e0e0e0;font-size:13px;
-  font-family:'Source Code Pro',monospace;padding:0 12px;
-  outline:none;margin-bottom:14px;transition:border .18s,box-shadow .18s;
-}
-.login-input:focus{border-color:#5bc0de;box-shadow:0 0 0 3px rgba(91,192,222,.2);}
-.login-input.shake{animation:shake .35s ease;}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-.login-btn{
-  width:100%;height:36px;background:#5cb85c;border:1px solid #4cae4c;
-  border-radius:3px;color:#fff;font-size:14px;font-weight:500;
-  font-family:'Roboto',sans-serif;cursor:pointer;margin-top:4px;
-  transition:background .15s;
-}
-.login-btn:hover{background:#449d44;}
-.login-err{font-size:12px;color:#f4a460;margin-top:10px;height:16px;text-align:center;font-family:'Source Code Pro',monospace;}
-.login-hint{font-size:11px;color:#94c5ee;margin-top:16px;font-style:italic;}
-@keyframes fadeOut{0%{opacity:1;transform:scale(1)}60%{opacity:1;transform:scale(1.03)}100%{opacity:0;transform:scale(.97)}}
-.login-out{animation:fadeOut .45s ease forwards;}
+  * { margin:0; padding:0; box-sizing:border-box; }
 
-/* ═══════════════════════════════
-   OUTER WRAPPER
-═══════════════════════════════ */
-.page{height:100vh;display:flex;flex-direction:row;overflow:hidden;}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
 
-/* ═══════════════════════════════
-   LEFT SIDEBAR  — #125792 blue
-═══════════════════════════════ */
-#left-component{
-  width:190px;flex-shrink:0;background:#125792;
-  display:flex;flex-direction:column;overflow:hidden;
-  position:relative;color:#fff;
-  border-right:2px solid #0f3a5f;
-}
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:9999; opacity:.4;
+  }
 
-/* fold arrow */
-.fold-btn{
-  position:absolute;right:0;top:0;
-  background:#0f3a5f;border:none;cursor:pointer;
-  color:#94c5ee;padding:14px 5px;font-size:13px;
-  line-height:1;z-index:5;
-}
-.fold-btn:hover{background:#0a2a45;color:#fff;}
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+  }
 
-/* header / logo */
-.sidebar-header{
-  background:#125792;padding:10px 0 0 0;text-align:center;
-}
-.sidebar-logo-link{
-  display:flex;flex-direction:column;align-items:center;
-  gap:4px;color:#fff;text-decoration:none;padding:0 24px 8px;
-}
-.sidebar-flash{
-  border:3px solid #fff;padding:5px 8px;font-size:16px;display:inline-block;
-}
-.sidebar-logo-text{font-size:17px;font-weight:700;letter-spacing:.5px;}
-.sidebar-tagline{
-  font-size:10px;color:#ccd7dd;font-style:italic;
-  padding:4px 10px 8px;border-top:1px solid #1a6fac;border-bottom:1px solid #1a6fac;
-  text-align:center;background:#125792;
-}
-.sidebar-motto{
-  font-size:11px;color:#ccd7dd;font-style:italic;
-  padding:6px 8px;border-bottom:1px solid #1a6fac;
-  text-align:center;
-}
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, #0a0f3a 0%, var(--bg) 70%);
+  }
 
-/* nav list */
-.sidebar-nav{list-style:none;background:#337ab7;border-bottom:1px solid #1a6fac;}
-.sidebar-nav li{border-bottom:1px solid #1a6fac;}
-.sidebar-nav li a{
-  display:block;padding:9px 18px;color:#fff;text-decoration:none;
-  font-size:13px;transition:background .14s;
-}
-.sidebar-nav li a:hover{background:#286090;color:#fff;}
-.sidebar-nav li.active a{background:#0f3a5f;color:#fff;font-weight:500;}
-.sidebar-nav .label-danger{background:#d9534f;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:middle;}
+  .grid-lines {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    animation: gridPulse 8s ease-in-out infinite;
+  }
 
-/* scratch file */
-.sidebar-scratch-area{padding:10px;border-top:1px solid #1a6fac;margin-top:auto;}
-.scratch-btn{
-  width:100%;padding:6px 10px;background:#0f3a5f;border:1px solid #1a6fac;
-  border-radius:3px;color:#94c5ee;font-size:12px;font-family:'Roboto',sans-serif;
-  cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;
-}
-.scratch-btn:hover{background:#125792;color:#fff;border-color:#5bc0de;}
+  @keyframes gridPulse { 0%,100%{opacity:.2} 50%{opacity:.5} }
 
-/* footer */
-.sidebar-footer{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:6px 6px 4px;background:#0f3a5f;
-  border-top:1px solid #1a6fac;
-}
-.sidebar-footer a{
-  color:#94c5ee;font-size:10px;text-decoration:none;
-  display:inline;line-height:1.8;
-}
-.sidebar-footer a:hover{color:#fff;text-decoration:underline;}
-.sidebar-footer .copyright{color:#7a9ab0;font-size:10px;text-align:center;display:block;margin-top:2px;}
+  .hero-content { position: relative; z-index:2; }
 
-/* ═══════════════════════════════
-   RIGHT COLUMN
-═══════════════════════════════ */
-#right-component{
-  flex:1;display:flex;flex-direction:column;overflow:hidden;
-  background:#f5f5f5;min-width:0;
-}
+  .hero-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .7rem; letter-spacing: .25em;
+    color: var(--accent1); border: 1px solid var(--accent1);
+    padding: .3rem .9rem; border-radius: 20px; display: inline-block;
+    margin-bottom: 1.5rem;
+    animation: fadeUp .8s ease both;
+  }
 
-/* ── TITLE BAR (Run/Debug/Stop + language) ── */
-#title-bar{
-  background:#f5f5f5;border-bottom:1px solid #ddd;
-  padding:5px 8px;display:flex;align-items:center;
-  flex-wrap:wrap;gap:4px;flex-shrink:0;min-height:42px;
-}
+  .hero h1 {
+    font-size: clamp(2.2rem, 7vw, 5rem);
+    font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent1) 60%, var(--accent4) 90%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: fadeUp .8s .15s ease both;
+    margin-bottom: .5rem;
+  }
 
-/* button groups */
-.btn-group{display:inline-flex;position:relative;}
-.btn{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:5px 10px;font-size:13px;font-family:'Roboto',sans-serif;
-  border-radius:3px;border:1px solid transparent;cursor:pointer;
-  font-weight:400;transition:all .15s;white-space:nowrap;height:30px;
-}
-.btn-success{background:#5cb85c;border-color:#4cae4c;color:#fff;}
-.btn-success:hover{background:#449d44;}
-.btn-success.running{background:#c9302c;border-color:#ac2925;animation:blink .6s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.7}}
-.btn-primary{background:#337ab7;border-color:#2e6da4;color:#fff;}
-.btn-primary:hover{background:#286090;}
-.btn-danger{background:#d9534f;border-color:#d43f3a;color:#fff;}
-.btn-danger:hover{background:#c9302c;}
-.btn-warning{background:#f0ad4e;border-color:#eea236;color:#fff;}
-.btn-warning:hover{background:#ec971f;}
-.btn-info{background:#5bc0de;border-color:#46b8da;color:#fff;}
-.btn-info:hover{background:#31b0d5;}
-.btn-default{background:#fff;border-color:#ccc;color:#333;}
-.btn-default:hover{background:#e6e6e6;}
-.btn-half{padding:5px 7px;border-radius:0;}
-.btn-group .btn:first-child{border-radius:3px 0 0 3px;}
-.btn-group .btn:last-child{border-radius:0 3px 3px 0;}
-.btn-group .btn:only-child{border-radius:3px;}
-.btn[disabled]{opacity:.65;cursor:not-allowed;}
+  .hero-sub {
+    color: var(--muted); font-size: 1rem; margin-bottom: 2rem;
+    font-family:'IBM Plex Mono', monospace;
+    animation: fadeUp .8s .3s ease both;
+  }
 
-/* language select + settings */
-.lang-area{margin-left:auto;display:flex;align-items:center;gap:5px;}
-.lang-label{font-size:13px;color:#555;}
-#lang-select{
-  height:30px;border:1px solid #ccc;border-radius:0;
-  background:#fff;font-size:13px;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;width:95px;
-}
+  .chapter-pills {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .8s .45s ease both;
+  }
 
-/* prog selector */
-.prog-select-wrap{display:flex;align-items:center;gap:6px;margin-left:6px;}
-#progSel{
-  height:28px;border:1px solid #ccc;border-radius:3px;
-  background:#fffde7;font-size:12px;color:#555;padding:0 6px;
-  font-family:'Roboto',sans-serif;cursor:pointer;outline:none;max-width:240px;
-}
+  .pill {
+    padding: .6rem 1.5rem; border-radius: 30px; font-weight: 600;
+    cursor: pointer; transition: all .3s;
+    text-decoration: none; font-size: .9rem;
+  }
+  .pill-laser { background: rgba(247,37,133,.15); border:1px solid var(--accent2); color:var(--accent2); }
+  .pill-fibre { background: rgba(76,201,240,.15); border:1px solid var(--accent4); color:var(--accent4); }
+  .pill:hover { transform: translateY(-3px); filter: brightness(1.3); }
 
-/* ── FILE TABS ── */
-#file-tabs-bar{
-  background:#757575;display:flex;align-items:flex-end;
-  padding:0 0 0 4px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;
-  min-height:30px;
-}
-#file-tabs-bar::-webkit-scrollbar{display:none;}
-.file-tab{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:5px 14px 5px;background:#9e9e9e;border-radius:3px 3px 0 0;
-  font-size:12.5px;color:#fff;cursor:pointer;border:1px solid #757575;
-  border-bottom:none;margin-right:2px;transition:background .12s;
-  white-space:nowrap;min-height:28px;
-}
-.file-tab.active{background:#f5f5f5;color:#333;border-color:#aaa;}
-.file-tab:hover:not(.active){background:#8d8d8d;}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
 
-/* ── TOP COMPONENT (editor area) ── */
-#top-component{
-  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;
-  position:relative;background:#f5f5f5;
-}
+  /* ─── LAYOUT ─── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* ── EDITOR ── */
-.editor-wrap{
-  flex:1;display:flex;overflow:hidden;min-height:0;background:#1e1e1e;
-}
-.line-gutter{
-  background:#1e1e1e;width:44px;flex-shrink:0;
-  border-right:1px solid #2d2d2d;overflow:hidden;padding-top:2px;
-}
-.lnum{
-  height:19px;line-height:19px;text-align:right;padding-right:10px;
-  font-family:'Source Code Pro',monospace;font-size:13px;
-  color:#3d3d3d;user-select:none;
-}
-.code-scroll{flex:1;overflow:auto;background:#1e1e1e;}
-.code-scroll::-webkit-scrollbar{width:10px;height:10px;}
-.code-scroll::-webkit-scrollbar-track{background:#1a1a1a;}
-.code-scroll::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
-.code-scroll::-webkit-scrollbar-corner{background:#1a1a1a;}
-.code-inner{padding:2px 0 24px 14px;min-width:max-content;}
-.cl{height:19px;line-height:19px;font-family:'Source Code Pro',monospace;font-size:13px;white-space:pre;display:block;color:#d4d4d4;}
-.cl:hover{background:rgba(255,255,255,.03);}
-/* syntax */
-.kw{color:#569cd6;}.pp{color:#c586c0;}.fn{color:#dcdcaa;}
-.str{color:#ce9178;}.num{color:#b5cea8;}.cmt{color:#6a9955;font-style:italic;}.mac{color:#9cdcfe;}
+  /* ─── CHAPTER HEADER ─── */
+  .chapter-header {
+    padding: 5rem 0 2rem;
+    text-align: center;
+  }
 
-/* scratch editor */
-.scratch-editor{
-  display:none;flex:1;overflow:auto;background:#1e1e1e;
-  font-family:'Source Code Pro',monospace;font-size:13px;
-  color:#d4d4d4;padding:6px 14px;outline:none;
-  line-height:19px;white-space:pre;caret-color:#fff;
-  border:none;resize:none;width:100%;min-height:0;
-}
-.scratch-editor::-webkit-scrollbar{width:10px;}
-.scratch-editor::-webkit-scrollbar-track{background:#1a1a1a;}
-.scratch-editor::-webkit-scrollbar-thumb{background:#3c3c3c;border-radius:5px;}
+  .chapter-label {
+    font-family:'IBM Plex Mono', monospace; font-size:.65rem; letter-spacing:.3em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: .8rem;
+  }
 
-/* ── DIVIDER / RESIZER ── */
-#my-divider1{
-  height:7px;background:#bdbdbd;cursor:row-resize;flex-shrink:0;
-  border-top:1px solid #aaa;border-bottom:1px solid #aaa;
-  display:flex;align-items:center;justify-content:center;position:relative;
-}
-.resizer-grip{color:#999;font-size:9px;letter-spacing:3px;}
-.resizer-toggle{
-  position:absolute;left:8px;top:50%;transform:translateY(-50%);
-  width:22px;height:16px;background:#9e9e9e;border:none;border-radius:3px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:10px;color:#fff;transition:background .15s;
-}
-.resizer-toggle:hover{background:#607d8b;}
+  .chapter-title {
+    font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800;
+    line-height: 1.1;
+  }
 
-/* ── BOTTOM PANEL ── */
-#bottom-component{
-  height:230px;flex-shrink:0;display:flex;flex-direction:column;
-  background:#f5f5f5;
-}
-#input_output_pan{display:flex;flex-direction:column;height:100%;}
+  .ch-laser .chapter-title { color: var(--accent2); text-shadow: 0 0 40px rgba(247,37,133,.4); }
+  .ch-fibre .chapter-title { color: var(--accent4); text-shadow: 0 0 40px rgba(76,201,240,.4); }
 
-/* pan control buttons */
-.pan_control_button_bar{
-  background:#e0e0e0;border-bottom:1px solid #ccc;padding:3px 6px;
-  display:flex;align-items:center;gap:4px;flex-shrink:0;
-}
-.ctrl-btn{
-  background:#fff;border:1px solid #ccc;border-radius:3px;
-  padding:3px 7px;cursor:pointer;font-size:12px;color:#555;
-  transition:background .12s;
-}
-.ctrl-btn:hover{background:#e6e6e6;color:#333;}
+  /* ─── TOPIC CARD ─── */
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .3s;
+  }
 
-/* console tabs */
-#console-title-bar{background:#f5f5f5;border-bottom:1px solid #ddd;flex-shrink:0;}
-.console-tabs{display:flex;list-style:none;padding:0;margin:0;}
-.console-tab{
-  padding:6px 16px;font-size:13px;color:#777;cursor:pointer;
-  border-right:1px solid #ddd;border-bottom:2px solid transparent;
-  transition:all .12s;
-}
-.console-tab:hover{color:#333;background:#e8e8e8;}
-.console-tab.active{color:#337ab7;border-bottom:2px solid #337ab7;background:#fff;font-weight:500;}
+  .topic-card:hover { border-color: #333860; }
 
-/* stdin area */
-.stdin-area{
-  flex:1;overflow:hidden;padding:8px 10px;background:#fff;
-  display:flex;flex-direction:column;gap:6px;font-size:13px;
-}
-.stdin-radio-row{display:flex;align-items:center;gap:16px;color:#555;}
-.stdin-radio-row label{display:flex;align-items:center;gap:5px;cursor:pointer;}
-.stdin-radio-row input[type=radio]{accent-color:#337ab7;cursor:pointer;}
+  .topic-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:2px;
+  }
 
-/* output area */
-.output-area{
-  flex:1;overflow-y:auto;background:#fff;padding:6px 10px;
-  font-family:'Source Code Pro',monospace;font-size:13px;line-height:1.6;color:#333;
-  display:none;
-}
-.output-area::-webkit-scrollbar{width:8px;}
-.output-area::-webkit-scrollbar-track{background:#f0f0f0;}
-.output-area::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px;}
-.ol{display:block;white-space:pre-wrap;}
-.o-info{color:#777;font-style:italic;}.o-prompt{color:#2e7d32;font-weight:500;}
-.o-input{color:#1565c0;}.o-err{color:#c62828;}
+  .ch-laser .topic-card::before { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+  .ch-fibre .topic-card::before { background: linear-gradient(90deg, var(--accent4), var(--accent1)); }
+
+  .topic-title {
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;
+  }
+
+  .ch-laser .topic-title { color: var(--accent2); }
+  .ch-fibre .topic-title { color: var(--accent4); }
+
+  .topic-text {
+    color: #b0b8d0; line-height: 1.8; font-size: .95rem;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 300;
+    margin-bottom: 1.2rem;
+  }
+
+  .topic-text strong { color: var(--accent1); font-weight: 600; }
+  .topic-text em { color: var(--accent5); font-style: normal; }
+
+  /* ─── FORMULA BOX ─── */
+  .formula {
+    background: #080a18; border: 1px solid #1e2a50;
+    border-left: 3px solid var(--accent5);
+    border-radius: 8px; padding: 1rem 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: .9rem; color: var(--accent5);
+    margin: 1rem 0;
+  }
+
+  /* ─── CANVAS CONTAINERS ─── */
+  .diagram-wrap {
+    background: #080a18;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .diagram-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .6rem; letter-spacing: .2em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+
+  canvas {
+    width: 100%; height: auto; display: block;
+    border-radius: 6px;
+  }
+
+  /* ─── KEY POINTS ─── */
+  .key-points {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: .75rem; margin: 1rem 0;
+  }
+
+  .kp {
+    background: #0a0c1e; border: 1px solid var(--border);
+    border-radius: 8px; padding: .8rem 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .78rem; color: #a0aec0; line-height: 1.5;
+  }
+
+  .kp-icon { font-size: 1.1rem; margin-bottom: .3rem; display: block; }
+
+  /* ─── COMPARISON TABLE ─── */
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace; font-size: .8rem;
+  }
+
+  thead tr { background: #0d0f28; }
+
+  th {
+    padding: .8rem 1rem; text-align: left;
+    color: var(--accent1); font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: .75rem 1rem; border-bottom: 1px solid #13162a;
+    color: #9aa0c0; line-height: 1.5;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #0f1228; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 4rem 0;
+  }
+
+  /* ─── SCROLL FADE IN ─── */
+  .reveal { opacity:0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity:1; transform: none; }
+
+  /* ─── BACK TO TOP ─── */
+  .back-top {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--accent1); color: var(--bg);
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; cursor: pointer; font-weight: 700;
+    box-shadow: 0 0 20px rgba(0,245,212,.4);
+    opacity: 0; transition: opacity .3s;
+    text-decoration: none;
+    z-index: 100;
+  }
+
+  .back-top.show { opacity: 1; }
+
+  /* ─── NAV BAR ─── */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(6,7,15,.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: .7rem 1.5rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .nav-logo {
+    font-weight: 800; font-size: .85rem;
+    color: var(--accent1); white-space: nowrap;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .nav-links { display: flex; gap: .7rem; flex-shrink:0; }
+
+  .nav-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .68rem; color: var(--muted);
+    text-decoration: none; white-space: nowrap;
+    padding: .25rem .6rem; border-radius: 4px;
+    transition: color .2s, background .2s;
+  }
+
+  .nav-link:hover { color: var(--text); background: var(--border); }
+
+  /* Push content below nav */
+  main { padding-top: 4rem; }
+
+  /* ─── ANIMATION BUTTONS ─── */
+  .anim-btn {
+    background: transparent; border: 1px solid var(--accent1);
+    color: var(--accent1); padding: .4rem 1rem;
+    border-radius: 20px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: .75rem;
+    transition: all .2s; margin-right: .5rem; margin-bottom: .5rem;
+  }
+
+  .anim-btn:hover { background: var(--accent1); color: var(--bg); }
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN OVERLAY ═══ -->
-<div id="loginOverlay">
-  <div class="login-box">
-    <div class="login-logo">
-      <span class="flash">&#9889;</span> OnlineGDB
-    </div>
-    <div class="login-sub">online compiler and debugger for c/c++</div>
-    <div class="login-label">Username</div>
-    <input class="login-input" id="loginUser" type="text" placeholder="username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <div class="login-label">Password</div>
-    <input class="login-input" id="loginPass" type="password" placeholder="password" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">&#9654; Login</button>
-    <div class="login-err" id="loginErr"></div>
-    <div class="login-hint">hint: owner of the website</div>
+<!-- NAV -->
+<nav class="topnav">
+  <span class="nav-logo">⚛ Applied Physics</span>
+  <div class="nav-links">
+    <a class="nav-link" href="#laser">Ch 1: Laser</a>
+    <a class="nav-link" href="#spont">Spontaneous</a>
+    <a class="nav-link" href="#stimulated">Stimulated</a>
+    <a class="nav-link" href="#population">Population Inv.</a>
+    <a class="nav-link" href="#metastable">Metastable</a>
+    <a class="nav-link" href="#cavity">Resonant Cavity</a>
+    <a class="nav-link" href="#henelaser">He-Ne Laser</a>
+    <a class="nav-link" href="#lidar">LIDAR</a>
+    <a class="nav-link" href="#fibre">Ch 2: Fibre Optics</a>
+    <a class="nav-link" href="#tir">TIR</a>
+    <a class="nav-link" href="#critical">Critical Angle</a>
+    <a class="nav-link" href="#acceptance">Acceptance Angle</a>
+    <a class="nav-link" href="#na">Num. Aperture</a>
+    <a class="nav-link" href="#stepgraded">Step vs Graded</a>
+    <a class="nav-link" href="#attenuation">Attenuation</a>
   </div>
-</div>
+</nav>
 
-<!-- ═══ MAIN PAGE ═══ -->
-<div class="page">
+<main>
 
-  <!-- ═══ LEFT SIDEBAR ═══ -->
-  <div id="left-component">
-    <button class="fold-btn" onclick="toggleSidebar()">&#10094;</button>
-
-    <div class="sidebar-header">
-      <div class="sidebar-logo-link">
-        <span class="sidebar-flash">&#9889;</span>
-        <span class="sidebar-logo-text">OnlineGDB</span>
-      </div>
-      <div class="sidebar-tagline">online compiler and debugger for c/c++</div>
-      <div class="sidebar-motto">code. compile. run. debug. share.</div>
-    </div>
-
-    <ul class="sidebar-nav">
-      <li class="active" id="nav-ide"><a href="#">IDE</a></li>
-      <li><a href="#">My Projects</a></li>
-      <li><a href="#">Classroom <span class="label-danger">new</span></a></li>
-      <li><a href="#">Learn Programming</a></li>
-      <li><a href="#">Programming Questions</a></li>
-      <li><a href="#">Sign Up</a></li>
-      <li><a href="#">Login</a></li>
-    </ul>
-
-    <div class="sidebar-scratch-area">
-      <button class="scratch-btn" onclick="openScratch()">&#128221; scratch.c</button>
-    </div>
-
-    <div class="sidebar-footer">
-      <div>
-        <a href="#">About</a> &bull; <a href="#">FAQ</a> &bull; <a href="#">Docs</a> &bull; <a href="#">Blog</a> &bull; <a href="#">Terms</a> &bull; <a href="#">Contact</a>
-      </div>
-      <span class="copyright">&copy; 2016–2026 GDB Online</span>
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">// First Year Engineering · Applied Physics</div>
+    <h1>Laser &amp;<br>Fibre Optics</h1>
+    <p class="hero-sub">Interactive Study Guide · Animated Diagrams · Deep Explanations</p>
+    <div class="chapter-pills">
+      <a class="pill pill-laser" href="#laser">Chapter 1 — Laser</a>
+      <a class="pill pill-fibre" href="#fibre">Chapter 2 — Fibre Optics</a>
     </div>
   </div>
+</section>
 
-  <!-- ═══ RIGHT COLUMN ═══ -->
-  <div id="right-component">
+<!-- ══════════════════════════════════════ -->
+<!--         CHAPTER 1 : LASER             -->
+<!-- ══════════════════════════════════════ -->
+<section id="laser" class="chapter-header ch-laser">
+  <div class="container">
+    <p class="chapter-label">Chapter 01</p>
+    <h2 class="chapter-title">Laser Physics</h2>
+  </div>
+</section>
 
-    <!-- TITLE BAR -->
-    <div id="title-bar">
-      <!-- new file + upload -->
-      <div class="btn-group">
-        <button class="btn btn-default btn-half" title="New File (Ctrl+M)">&#128196;</button>
-        <button class="btn btn-default btn-half" title="Upload File">&#9650;</button>
-      </div>
+<div class="container">
 
-      <!-- Run -->
-      <div class="btn-group">
-        <button class="btn btn-success" id="runBtn" onclick="runCode()">&#9654; Run</button>
-        <button class="btn btn-success btn-half" style="padding:5px 5px;">&#9660;</button>
-      </div>
-
-      <!-- Debug / Stop -->
-      <button class="btn btn-primary" id="debugBtn">&#9654;&#9711; Debug</button>
-      <button class="btn btn-danger" id="stopBtn" onclick="stopCode()">&#9632; Stop</button>
-
-      <!-- Share / Save / Beautify / Download -->
-      <button class="btn btn-warning">&#10150; Share</button>
-      <button class="btn btn-primary">&#128190; Save</button>
-      <button class="btn btn-info" onclick="doBeautify()">{ } Beautify</button>
-      <div class="btn-group">
-        <button class="btn btn-info btn-half">&#8659;</button>
-        <button class="btn btn-info btn-half">&#9660;</button>
-      </div>
-
-      <!-- Language + settings -->
-      <div class="lang-area">
-        <span class="lang-label">Language</span>
-        <select id="lang-select">
-          <option selected value="c">C</option>
-          <option value="c++">C++</option>
-          <option value="c++14">C++ 14</option>
-          <option value="c++17">C++ 17</option>
-          <option value="c++20">C++ 20</option>
-          <option value="java">Java</option>
-          <option value="python">Python 3</option>
-          <option value="kotlin">Kotlin</option>
-          <option value="php">PHP</option>
-          <option value="c#">C# (mono)</option>
-          <option value="ruby">Ruby</option>
-          <option value="go">Go</option>
-          <option value="rust">Rust</option>
-          <option value="swift">Swift</option>
-          <option value="bash">Bash</option>
-        </select>
-        <button class="btn btn-warning" style="padding:5px 8px;">&#9432;</button>
-        <button class="btn btn-warning" style="padding:5px 8px;">&#9881;</button>
-      </div>
-
-      <!-- Program selector -->
-      <div class="prog-select-wrap">
-        <select id="progSel" onchange="loadProg(this.value)">
-          <option value="">&#128193; Load Program&hellip;</option>
-          <option value="1">01 &bull; Insert at Position (Array)</option>
-          <option value="2">02 &bull; Delete at Position (Array)</option>
-          <option value="3">03 &bull; Factorial via Recursion</option>
-          <option value="4">04 &bull; Stack &ndash; Push</option>
-          <option value="5">05 &bull; Stack &ndash; Pop</option>
-          <option value="6">06 &bull; Linear Queue &ndash; Enqueue</option>
-          <option value="7">07 &bull; Linear Queue &ndash; Dequeue</option>
-          <option value="8">08 &bull; Circular Queue &ndash; Enqueue</option>
-          <option value="9">09 &bull; Circular Queue &ndash; Dequeue</option>
-        </select>
+  <!-- ── Spontaneous Emission ── -->
+  <div id="spont" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">① Spontaneous Emission</h3>
+    <p class="topic-text">
+      An atom has electrons that can exist in different <strong>energy levels</strong>. When an electron is in a higher (excited) energy state E₂ and <em>no external trigger is needed</em>, it randomly falls back to the lower ground state E₁.<br><br>
+      While falling, it <strong>releases energy in the form of a photon</strong>. The energy of the photon equals exactly the difference between the two levels:<br>
+    </p>
+    <div class="formula">E_photon = h·ν = E₂ − E₁</div>
+    <p class="topic-text">
+      The key word is <em>spontaneous</em> — it happens on its own, at a <strong>random time and in a random direction</strong>. Photons emitted this way are <strong>incoherent</strong> (different phases, different directions). This is what happens in a normal light bulb or LED.
+    </p>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: Spontaneous Emission</div>
+      <canvas id="cSpont" width="700" height="200"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startSpont()">▶ Play</button>
+        <button class="anim-btn" onclick="resetSpont()">↺ Reset</button>
       </div>
     </div>
-
-    <!-- FILE TABS -->
-    <div id="file-tabs-bar">
-      <div class="file-tab active" id="fileTab">main.c</div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">⚡</span>Random process — no external trigger</div>
+      <div class="kp"><span class="kp-icon">🔀</span>Emitted photon: random phase & direction</div>
+      <div class="kp"><span class="kp-icon">💡</span>Source of ordinary (incoherent) light</div>
+      <div class="kp"><span class="kp-icon">⏱</span>Lifetime in excited state ~10⁻⁸ s</div>
     </div>
+  </div>
 
-    <!-- TOP COMPONENT: editor -->
-    <div id="top-component">
-      <!-- syntax editor -->
-      <div class="editor-wrap" id="editorWrap">
-        <div class="line-gutter" id="lineGutter"></div>
-        <div class="code-scroll" id="codeScroll" onscroll="syncGutter()">
-          <div class="code-inner" id="codeInner"></div>
-        </div>
-      </div>
-      <!-- scratch textarea -->
-      <textarea class="scratch-editor" id="scratchEditor"
-        placeholder="// scratch.c — write anything here"
-        spellcheck="false"></textarea>
-    </div>
-
-    <!-- RESIZE DIVIDER -->
-    <div id="my-divider1">
-      <span class="resizer-grip">&#8226;&#8226;&#8226;&#8226;&#8226;</span>
-      <button class="resizer-toggle" id="toggleBtn" onclick="togglePanel(event)">&#9650;</button>
-    </div>
-
-    <!-- BOTTOM COMPONENT: input/output -->
-    <div id="bottom-component">
-      <div id="input_output_pan">
-
-        <!-- pan control buttons -->
-        <div class="pan_control_button_bar">
-          <button class="ctrl-btn" onclick="togglePanelHide()" title="Hide">&#8964;</button>
-          <button class="ctrl-btn" id="maxMinBtn" onclick="togglePanel2()" title="Maximize">&#9635;</button>
-          <button class="ctrl-btn" title="Vertical Position">&#9638;</button>
-          <button class="ctrl-btn" title="Terminal Settings">&#9881;</button>
-          <button class="ctrl-btn" title="Copy output">&#9112;</button>
-        </div>
-
-        <!-- console tabs -->
-        <div id="console-title-bar">
-          <ul class="console-tabs">
-            <li class="console-tab active" id="tab-btn-stdin"  onclick="switchTab('stdin')">input</li>
-            <li class="console-tab"        id="tab-btn-stdout" onclick="switchTab('stdout')">stdout</li>
-            <li class="console-tab"        id="tab-btn-stderr" onclick="switchTab('stderr')">stderr</li>
-          </ul>
-        </div>
-
-        <!-- stdin pane -->
-        <div class="stdin-area" id="pane-stdin">
-          <div class="stdin-radio-row">
-            Standard Input:
-            <label><input type="radio" name="input_method" value="interactive" checked/> Interactive Console</label>
-            <label style="margin-left:30px;"><input type="radio" name="input_method" value="text"/> Text</label>
-          </div>
-        </div>
-
-        <!-- stdout pane -->
-        <div class="output-area" id="pane-stdout"></div>
-
-        <!-- stderr pane -->
-        <div class="output-area" id="pane-stderr"></div>
-
+  <!-- ── Stimulated Emission ── -->
+  <div id="stimulated" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">② Stimulated Emission</h3>
+    <p class="topic-text">
+      Now imagine an excited atom (electron in E₂) is <strong>hit by an incoming photon</strong> whose energy <em>exactly matches</em> E₂ − E₁.<br><br>
+      This incoming photon <em>stimulates</em> the electron to drop down, releasing a second photon. The magic is that the emitted photon is <strong>identical</strong> to the incoming photon in: phase, frequency, direction, and polarization.<br><br>
+      So one photon enters → <em>two coherent photons leave.</em> This is the fundamental mechanism of laser amplification — <strong>L</strong>ight <strong>A</strong>mplification by <strong>S</strong>timulated <strong>E</strong>mission of <strong>R</strong>adiation.
+    </p>
+    <div class="formula">ΔE = h·ν_incoming  →  Two identical photons emitted</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: Stimulated Emission — 1 in, 2 out</div>
+      <canvas id="cStim" width="700" height="200"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startStim()">▶ Play</button>
+        <button class="anim-btn" onclick="resetStim()">↺ Reset</button>
       </div>
     </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🎯</span>Triggered by matching-energy photon</div>
+      <div class="kp"><span class="kp-icon">🔗</span>Emitted photon is COHERENT with incoming</div>
+      <div class="kp"><span class="kp-icon">✖2</span>Signal amplification: 1 photon → 2</div>
+      <div class="kp"><span class="kp-icon">🔬</span>This IS the lasing mechanism</div>
+    </div>
+  </div>
 
-  </div><!-- /right-component -->
-</div><!-- /page -->
+  <!-- ── Population Inversion ── -->
+  <div id="population" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">③ Population Inversion</h3>
+    <p class="topic-text">
+      In thermal equilibrium, most atoms are in the <strong>ground state</strong> (low energy). If a photon travels through, it's more likely to be <em>absorbed</em> than to cause stimulated emission. So no amplification happens!<br><br>
+      For a laser to work, we need the <em>opposite</em> situation: <strong>more atoms in the excited state than in the ground state</strong>. This abnormal condition is called <em>Population Inversion</em>.<br><br>
+      We achieve this by <strong>pumping energy</strong> into the medium (using light, electricity, or chemical reactions) to keep pushing atoms to higher levels faster than they fall back.
+    </p>
+    <div class="formula">N₂ > N₁   ← Population Inversion condition</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: Before vs After Population Inversion (pumping)</div>
+      <canvas id="cPop" width="700" height="220"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startPop()">▶ Pump Energy</button>
+        <button class="anim-btn" onclick="resetPop()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🔋</span>Achieved by external pumping (optical/electrical)</div>
+      <div class="kp"><span class="kp-icon">📊</span>N₂ > N₁ (more atoms excited than ground)</div>
+      <div class="kp"><span class="kp-icon">⚠️</span>Without this, medium absorbs instead of amplifies</div>
+      <div class="kp"><span class="kp-icon">🏗️</span>Requires 3-level or 4-level energy systems</div>
+    </div>
+  </div>
 
+  <!-- ── Metastable State ── -->
+  <div id="metastable" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">④ Metastable State</h3>
+    <p class="topic-text">
+      Atoms normally stay excited for only ~10⁻⁸ seconds before spontaneously emitting. But for population inversion, we need atoms to <em>stay excited longer</em>.<br><br>
+      A <strong>metastable state</strong> is a special energy level where atoms remain for a relatively long time (~10⁻³ seconds — a million times longer!). Atoms are pumped to a higher short-lived level, quickly drop to the metastable state, and <em>accumulate there</em>.<br><br>
+      This is what makes population inversion possible. The metastable state acts like a <strong>"waiting room"</strong> — atoms collect there until a photon stimulates them all to emit together.
+    </p>
+    <div class="formula">τ_metastable ≈ 10⁻³ s  vs  τ_normal ≈ 10⁻⁸ s</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Diagram: Energy levels — pump → metastable → ground</div>
+      <canvas id="cMeta" width="700" height="260"></canvas>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">⏳</span>Lifetime ~10⁻³ s (very long for an atom)</div>
+      <div class="kp"><span class="kp-icon">📥</span>Atoms accumulate here — population inversion builds</div>
+      <div class="kp"><span class="kp-icon">🔑</span>Essential for lasing action</div>
+      <div class="kp"><span class="kp-icon">🏛️</span>Example: E₃ in He-Ne, Nd:YAG lasers</div>
+    </div>
+  </div>
+
+  <!-- ── Resonant Cavity ── -->
+  <div id="cavity" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">⑤ Resonant Cavity (Optical Resonator)</h3>
+    <p class="topic-text">
+      A single pass of light through the gain medium isn't enough amplification. The <strong>resonant cavity</strong> solves this by bouncing light back and forth, amplifying it with each pass.<br><br>
+      It consists of <strong>two mirrors</strong>: one fully reflective (100%) and one partially reflective (~95%). The partially reflective mirror lets a small fraction of the light out — this is the actual laser beam!<br><br>
+      The cavity also acts as a <strong>frequency selector</strong>. Only wavelengths where an integer number of half-waves fit between the mirrors experience constructive interference and get amplified — others cancel out. This gives the laser its extremely <em>narrow frequency</em>.
+    </p>
+    <div class="formula">L = n · (λ/2)   where n = 1, 2, 3... (resonance condition)</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: Light bouncing in resonant cavity, output beam</div>
+      <canvas id="cCavity" width="700" height="200"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startCavity()">▶ Play</button>
+        <button class="anim-btn" onclick="resetCavity()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🪞</span>Mirror 1: 100% reflective (back)</div>
+      <div class="kp"><span class="kp-icon">🔦</span>Mirror 2: ~95% reflective (output coupler)</div>
+      <div class="kp"><span class="kp-icon">🔁</span>Multiple passes → huge amplification</div>
+      <div class="kp"><span class="kp-icon">🎵</span>Standing wave condition selects frequency</div>
+    </div>
+  </div>
+
+  <!-- ── He-Ne Laser ── -->
+  <div id="henelaser" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">⑥ Helium-Neon (He-Ne) Laser</h3>
+    <p class="topic-text">
+      The He-Ne laser is a classic <strong>gas laser</strong> that produces a bright red beam at <em>632.8 nm</em>. It uses a mixture of He and Ne gases in a glass tube.<br><br>
+      <strong>How it works (step-by-step):</strong><br>
+      1. An <em>electrical discharge</em> (high voltage) excites <strong>Helium atoms</strong> to metastable states (E₁* and E₂*).<br>
+      2. Excited He atoms collide with <strong>Neon atoms</strong> and transfer their energy — this is called <em>resonant energy transfer</em> because He and Ne have nearly identical energy levels.<br>
+      3. Neon atoms reach their metastable upper lasing levels and <strong>population inversion is achieved in Neon</strong>.<br>
+      4. Stimulated emission occurs in Neon, producing the 632.8 nm laser light.<br>
+      5. The resonant cavity amplifies this into a coherent beam.
+    </p>
+    <div class="formula">He(excited) + Ne(ground) → He(ground) + Ne(excited)  [resonant collision]
+λ = 632.8 nm  (red visible laser)</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: He-Ne Laser — energy transfer & beam output</div>
+      <canvas id="cHene" width="700" height="280"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startHene()">▶ Animate</button>
+        <button class="anim-btn" onclick="resetHene()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🔴</span>Output: 632.8 nm (red) — most common</div>
+      <div class="kp"><span class="kp-icon">⚡</span>Pumping: electrical discharge through gas</div>
+      <div class="kp"><span class="kp-icon">🤝</span>He excites, Ne lases (resonant transfer)</div>
+      <div class="kp"><span class="kp-icon">📐</span>Highly monochromatic & coherent</div>
+    </div>
+  </div>
+
+  <!-- ── LIDAR ── -->
+  <div id="lidar" class="topic-card ch-laser reveal">
+    <h3 class="topic-title">⑦ LIDAR (Light Detection and Ranging)</h3>
+    <p class="topic-text">
+      LIDAR is the laser equivalent of RADAR. Instead of radio waves, it uses <strong>laser pulses</strong> to measure distances and create 3D maps of environments with incredible precision.<br><br>
+      <strong>Working Principle:</strong><br>
+      A laser sends out a short pulse. The pulse hits an object and some light <em>bounces back</em> to a detector. By measuring the <em>time of flight</em> (time taken for the pulse to return), we calculate the exact distance:<br>
+    </p>
+    <div class="formula">Distance (d) = c × Δt / 2
+where c = speed of light, Δt = round-trip time</div>
+    <p class="topic-text">
+      By scanning millions of pulses in all directions, LIDAR builds a <strong>detailed 3D point cloud</strong> of the environment. Used in: autonomous cars, aircraft mapping, archaeology, meteorology (measuring cloud height), and even Mars rovers!
+    </p>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: LIDAR pulse sent & returned, distance calculated</div>
+      <canvas id="cLidar" width="700" height="200"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startLidar()">▶ Fire Pulse</button>
+        <button class="anim-btn" onclick="resetLidar()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🚗</span>Used in self-driving cars (Tesla, Waymo)</div>
+      <div class="kp"><span class="kp-icon">🌍</span>Topographic mapping from aircraft</div>
+      <div class="kp"><span class="kp-icon">⚡</span>cm-level precision over km distances</div>
+      <div class="kp"><span class="kp-icon">🌫</span>Atmospheric sensing — wind, clouds, pollution</div>
+    </div>
+  </div>
+
+</div><!-- /container ch1 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════ -->
+<!--       CHAPTER 2 : FIBRE OPTICS        -->
+<!-- ══════════════════════════════════════ -->
+<section id="fibre" class="chapter-header ch-fibre">
+  <div class="container">
+    <p class="chapter-label">Chapter 02</p>
+    <h2 class="chapter-title">Fibre Optics</h2>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- ── TIR ── -->
+  <div id="tir" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">① Total Internal Reflection (TIR)</h3>
+    <p class="topic-text">
+      When light travels from a <strong>denser medium</strong> (high refractive index n₁) to a <strong>rarer medium</strong> (low n₂), it bends <em>away</em> from the normal (Snell's Law). As the angle of incidence increases, the refracted ray bends more and more.<br><br>
+      At a specific angle called the <strong>critical angle</strong>, the refracted ray travels <em>along the interface</em> (90° to normal). Beyond this angle — <strong>all light is reflected back</strong> into the denser medium. No light escapes. This is <em>Total Internal Reflection</em>.<br><br>
+      Optical fibres exploit TIR to <strong>trap light inside the glass core</strong> and guide it over long distances.
+    </p>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: TIR — drag angle slider to see partial → critical → total reflection</div>
+      <canvas id="cTIR" width="700" height="280"></canvas>
+      <div style="margin-top:.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--muted)">Angle of incidence:</span>
+        <input type="range" id="tirAngle" min="10" max="80" value="30" style="accent-color:var(--accent4); width:200px;">
+        <span id="tirAngleVal" style="font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--accent1)">30°</span>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">🔴</span>Only in denser → rarer medium</div>
+      <div class="kp"><span class="kp-icon">🔁</span>100% of light reflected — no energy lost</div>
+      <div class="kp"><span class="kp-icon">🔮</span>Basis of all optical fibre communication</div>
+      <div class="kp"><span class="kp-icon">💎</span>Also explains sparkle of diamonds!</div>
+    </div>
+  </div>
+
+  <!-- ── Critical Angle ── -->
+  <div id="critical" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">② Critical Angle</h3>
+    <p class="topic-text">
+      The <strong>critical angle (θ_c)</strong> is the <em>minimum angle of incidence</em> (measured from the normal, inside the denser medium) at which Total Internal Reflection occurs.<br><br>
+      Derived from Snell's Law: n₁·sin(θ₁) = n₂·sin(θ₂). At the critical angle, θ₂ = 90°, so sin(90°) = 1:
+    </p>
+    <div class="formula">n₁·sin(θ_c) = n₂·sin(90°) = n₂
+⟹  sin(θ_c) = n₂/n₁
+⟹  θ_c = sin⁻¹(n₂/n₁)</div>
+    <p class="topic-text">
+      For glass (n₁ = 1.5) and air (n₂ = 1.0): θ_c = sin⁻¹(1/1.5) ≈ <em>41.8°</em><br>
+      For a fibre core (n₁ = 1.48) and cladding (n₂ = 1.46): θ_c ≈ <em>80.6°</em>
+    </p>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">📐</span>θ_c = sin⁻¹(n₂/n₁)</div>
+      <div class="kp"><span class="kp-icon">🔺</span>If angle > θ_c → TIR occurs</div>
+      <div class="kp"><span class="kp-icon">⬇</span>Higher n₁/n₂ ratio → smaller θ_c → easier TIR</div>
+      <div class="kp"><span class="kp-icon">🔢</span>Glass/air θ_c ≈ 41.8°</div>
+    </div>
+  </div>
+
+  <!-- ── Acceptance Angle ── -->
+  <div id="acceptance" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">③ Acceptance Angle</h3>
+    <p class="topic-text">
+      Not all light entering a fibre will undergo TIR — only light entering within a <strong>cone of acceptance</strong> will be guided. The <em>acceptance angle (θ_a)</em> is the <strong>maximum angle</strong> to the fibre axis at which light can enter and still undergo TIR inside.<br><br>
+      Light entering at an angle greater than θ_a will hit the core-cladding boundary at too shallow an angle and escape — it won't be guided.<br>
+    </p>
+    <div class="formula">sin(θ_a) = √(n₁² − n₂²) / n₀
+For air (n₀ = 1): sin(θ_a) = √(n₁² − n₂²)
+θ_a = sin⁻¹(√(n₁² − n₂²))</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Diagram: Acceptance cone at fibre entrance</div>
+      <canvas id="cAccept" width="700" height="220"></canvas>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">📡</span>Defines the input "cone" that gets guided</div>
+      <div class="kp"><span class="kp-icon">🔺</span>Light outside this cone escapes the core</div>
+      <div class="kp"><span class="kp-icon">🔗</span>sin(θ_a) = NA (Numerical Aperture)</div>
+      <div class="kp"><span class="kp-icon">📏</span>Wider acceptance → easier to couple light in</div>
+    </div>
+  </div>
+
+  <!-- ── Numerical Aperture (with full derivation) ── -->
+  <div id="na" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">④ Numerical Aperture (NA) — Full Derivation</h3>
+    <p class="topic-text">
+      The <strong>Numerical Aperture (NA)</strong> is the most important parameter of an optical fibre — it measures the fibre's ability to <em>collect and guide light</em>. It equals sin of the acceptance angle.
+    </p>
+    <p class="topic-text"><strong>Step-by-step derivation for Step Index Fibre:</strong></p>
+    <p class="topic-text">
+      At the fibre entrance (in medium n₀), Snell's Law gives:<br>
+      <strong>n₀ · sin(θ_a) = n₁ · sin(θ_r)</strong>   …(1)<br><br>
+      Inside the core, at the core-cladding boundary, for TIR we need the angle to be ≥ critical angle:<br>
+      The ray hits the boundary at angle φ = (90° − θ_r)<br>
+      For TIR: φ ≥ θ_c → (90° − θ_r) ≥ θ_c → θ_r ≤ (90° − θ_c)<br><br>
+      At the limiting case (maximum acceptance): φ = θ_c<br>
+      So: <strong>n₁ · sin(θ_c) = n₂</strong>   …(2)  (from critical angle definition)<br><br>
+      From (2): sin(θ_c) = n₂/n₁ → cos(θ_c) = √(1 − n₂²/n₁²)<br><br>
+      At maximum acceptance: θ_r = 90° − θ_c<br>
+      So: sin(θ_r) = sin(90° − θ_c) = cos(θ_c) = √(1 − n₂²/n₁²) = √(n₁² − n₂²)/n₁<br><br>
+      Substituting back into (1):<br>
+      n₀ · sin(θ_a) = n₁ · √(n₁² − n₂²)/n₁ = √(n₁² − n₂²)<br>
+    </p>
+    <div class="formula">∴  NA = n₀ · sin(θ_a) = √(n₁² − n₂²)     [for n₀ = 1 (air)]
+
+Where:
+  n₁ = refractive index of core (higher)
+  n₂ = refractive index of cladding (lower)
+  θ_a = acceptance angle
+
+Also:  NA = n₁ · √(2Δ)   where Δ = (n₁−n₂)/n₁  (fractional refractive index diff)</div>
+    <p class="topic-text">
+      <strong>Physical meaning:</strong> Higher NA → larger acceptance cone → easier to couple light → but more dispersion. Typical single-mode fibre: NA ≈ 0.1 to 0.2. Multimode: NA ≈ 0.2 to 0.5.
+    </p>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Diagram: NA derivation geometry</div>
+      <canvas id="cNA" width="700" height="250"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Step Index vs Graded Index ── -->
+  <div id="stepgraded" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">⑤ Step Index vs Graded Index Fibre</h3>
+    <p class="topic-text">
+      Optical fibres differ in how the <strong>refractive index varies</strong> across the cross-section of the core:
+    </p>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Diagram: Refractive index profiles & ray paths comparison</div>
+      <canvas id="cCompare" width="700" height="300"></canvas>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Step Index (Multimode)</th>
+            <th>Graded Index (Multimode)</th>
+            <th>Step Index (Single Mode)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>RI Profile</td><td>Uniform core, sharp boundary</td><td>Gradually decreasing from axis</td><td>Uniform but very narrow core</td></tr>
+          <tr><td>Ray Path</td><td>Zigzag (bounces sharply)</td><td>Sinusoidal (curves smoothly)</td><td>Straight (only one mode)</td></tr>
+          <tr><td>Core Diameter</td><td>50–200 μm</td><td>50–100 μm</td><td>8–10 μm</td></tr>
+          <tr><td>Bandwidth</td><td>Low (~20 MHz·km)</td><td>Medium (~500 MHz·km)</td><td>Very High (>10 GHz·km)</td></tr>
+          <tr><td>Modal Dispersion</td><td>High (different paths = diff. times)</td><td>Low (speed compensates path)</td><td>Zero (single mode)</td></tr>
+          <tr><td>Attenuation</td><td>High</td><td>Medium</td><td>Low</td></tr>
+          <tr><td>Cost</td><td>Cheapest</td><td>Medium</td><td>Most expensive</td></tr>
+          <tr><td>Applications</td><td>Short distance LAN</td><td>Campus networks</td><td>Long-haul telecom, internet backbone</td></tr>
+          <tr><td>NA</td><td>High (0.3–0.5)</td><td>Lower, varies with radius</td><td>Low (0.1–0.2)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">📈</span>Step: RI jumps abruptly at core edge</div>
+      <div class="kp"><span class="kp-icon">📉</span>Graded: RI decreases gradually outward — reduces dispersion</div>
+      <div class="kp"><span class="kp-icon">🌐</span>Internet uses single-mode step-index</div>
+      <div class="kp"><span class="kp-icon">🔬</span>Graded index: outer rays travel faster, inner slower — all arrive together!</div>
+    </div>
+  </div>
+
+  <!-- ── Attenuation ── -->
+  <div id="attenuation" class="topic-card ch-fibre reveal">
+    <h3 class="topic-title">⑥ Attenuation in Optical Fibres</h3>
+    <p class="topic-text">
+      As light travels through an optical fibre, its power <em>decreases</em> with distance. This loss is called <strong>attenuation</strong>. It's measured in <em>decibels per kilometre (dB/km)</em>.
+    </p>
+    <div class="formula">Attenuation (dB/km) = (10/L) · log₁₀(P_in / P_out)
+where L = fibre length in km</div>
+    <p class="topic-text">
+      <strong>Main causes of attenuation:</strong><br><br>
+      🔵 <strong>Rayleigh Scattering</strong> — Light scatters off microscopic density fluctuations in the glass. Dominant at short wavelengths. Follows λ⁻⁴ law — shorter λ = more scattering.<br><br>
+      🔴 <strong>Absorption</strong> — Glass absorbs some photons due to impurities (OH⁻ ions, metal ions) or intrinsic glass absorption. Pure silica has very low absorption.<br><br>
+      🟡 <strong>Micro/Macro-bending losses</strong> — Any bend in the fibre changes the angle of incidence at the core-cladding boundary. If the angle drops below critical angle, light escapes.<br><br>
+      📡 The minimum attenuation window for silica fibre is at <em>1550 nm</em> (~0.2 dB/km) — which is why all modern long-haul internet uses 1550 nm wavelength!
+    </p>
+    <div class="formula">Attenuation vs Wavelength (silica fibre):
+  850 nm  : ~2.5 dB/km   (multimode window)
+  1310 nm : ~0.35 dB/km  (zero-dispersion point)
+  1550 nm : ~0.2 dB/km   (minimum attenuation — used by internet!)</div>
+    <div class="diagram-wrap">
+      <div class="diagram-label">// Animation: Signal fading with distance along fibre</div>
+      <canvas id="cAtten" width="700" height="200"></canvas>
+      <div style="margin-top:.5rem">
+        <button class="anim-btn" onclick="startAtten()">▶ Show Signal Decay</button>
+        <button class="anim-btn" onclick="resetAtten()">↺ Reset</button>
+      </div>
+    </div>
+    <div class="key-points">
+      <div class="kp"><span class="kp-icon">📡</span>1550 nm used globally for low-loss comms</div>
+      <div class="kp"><span class="kp-icon">📉</span>0.2 dB/km → after 100 km, only 1% power left</div>
+      <div class="kp"><span class="kp-icon">🔬</span>Rayleigh scattering dominant for λ < 1000 nm</div>
+      <div class="kp"><span class="kp-icon">🔁</span>Repeaters/amplifiers placed every ~80 km</div>
+    </div>
+  </div>
+
+</div><!-- /container ch2 -->
+
+<div style="height:4rem"></div>
+
+<a class="back-top" id="backTop" href="#top">↑</a>
+
+</main>
+
+<!-- ══════════════════ JAVASCRIPT ══════════════════ -->
 <script>
-/* ════════════════════════════════════════
-   PROGRAMS
-════════════════════════════════════════ */
-const P={
-1:{f:'main.c',code:`/******************************************************************************
+// ─── UTILS ───
+const C = id => document.getElementById(id);
+const ctx = id => C(id).getContext('2d');
 
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
+// ─── SCROLL REVEALS ───
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.12});
+revealEls.forEach(el => obs.observe(el));
 
-*******************************************************************************/
+// Back to top
+window.addEventListener('scroll', () => {
+  C('backTop').classList.toggle('show', scrollY > 400);
+});
 
-#include <stdio.h>
+// ─── COLOR HELPERS ───
+const CYAN='#00f5d4', PINK='#f72585', YELLOW='#ffd60a', BLUE='#4cc9f0',
+      RED='#ff3838', GREEN='#39ff14', GRAY='#1e2240', LIGHT='#b0b8d0',
+      WHITE='#e8eaf6', DIM='#6b7280';
 
-#define MAX_SIZE 100
-
-void insertAtPosition(int arr[], int *size, int element, int position)
-{
-    if (*size >= MAX_SIZE)
-    {
-        printf("Error: Array is full.\\n");
-        return;
-    }
-
-    if (position < 1 || position > *size + 1)
-    {
-        printf("Error: Invalid position.\\n");
-        return;
-    }
-
-    for (int i = *size; i >= position; i--)
-    {
-        arr[i] = arr[i - 1];
-    }
-
-    arr[position - 1] = element;
-    (*size)++;
-
-    printf("Inserted %d at position %d.\\n", element, position);
+function clearCanvas(id, bg='#080a18') {
+  const c=C(id); const x=ctx(id);
+  x.fillStyle=bg; x.fillRect(0,0,c.width,c.height);
+  return x;
 }
 
-void displayArray(int arr[], int size)
-{
-    if (size == 0)
-    {
-        printf("Array is empty.\\n");
-        return;
-    }
-
-    printf("Array elements: ");
-    for (int i = 0; i < size; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-    printf("\\n");
+function label(x,text,cx,cy,color=LIGHT,size=12,align='center') {
+  x.fillStyle=color; x.font=`${size}px "IBM Plex Mono"`;
+  x.textAlign=align; x.fillText(text,cx,cy);
 }
 
-int main()
-{
-    int arr[MAX_SIZE];
-    int size = 0;
-    int choice, element, position;
-
-    while (1)
-    {
-        printf("\\nMenu:\\n");
-        printf("1. Insert element\\n");
-        printf("2. Display array\\n");
-        printf("3. Exit\\n");
-        printf("Enter your choice: ");
-
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input. Exiting.\\n");
-            return 0;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            printf("Enter element: ");
-            scanf("%d", &element);
-            printf("Enter position (1 to %d): ", size + 1);
-            scanf("%d", &position);
-            insertAtPosition(arr, &size, element, position);
-            break;
-        case 2:
-            displayArray(arr, size);
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            return 0;
-        default:
-            printf("Invalid choice.\\n");
-        }
-    }
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'25'},{t:'p',s:'Enter position (1 to 1): '},{t:'u',s:'1'},{t:'o',s:'Inserted 25 at position 1.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Insert element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 25 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.003 s'},{t:'i',s:'Press ENTER to continue.'}]},
-2:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-
-#define MAX_SIZE 10
-
-void deleteAtPosition(int arr[], int *size, int position)
-{
-    if (*size == 0)
-    {
-        printf("Error: Array is empty.\\n");
-        return;
-    }
-
-    if (position < 1 || position > *size)
-    {
-        printf("Error: Invalid position.\\n");
-        return;
-    }
-
-    int deleted = arr[position - 1];
-
-    for (int i = position - 1; i < *size - 1; i++)
-    {
-        arr[i] = arr[i + 1];
-    }
-
-    (*size)--;
-
-    printf("Deleted element: %d\\n", deleted);
+function arrow(x,x1,y1,x2,y2,color=CYAN,lw=1.5) {
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+  const ux=dx/len,uy=dy/len,hs=8;
+  x.strokeStyle=color; x.lineWidth=lw;
+  x.beginPath(); x.moveTo(x1,y1); x.lineTo(x2,y2); x.stroke();
+  x.fillStyle=color; x.beginPath();
+  x.moveTo(x2,y2);
+  x.lineTo(x2-hs*ux-hs*.5*uy, y2-hs*uy+hs*.5*ux);
+  x.lineTo(x2-hs*ux+hs*.5*uy, y2-hs*uy-hs*.5*ux);
+  x.fill();
 }
 
-void displayArray(int arr[], int size)
-{
-    if (size == 0)
-    {
-        printf("Array is empty.\\n");
-        return;
+// ═══════════════════════════════════════
+// 1. SPONTANEOUS EMISSION
+// ═══════════════════════════════════════
+let spontAF=null, spontT=0;
+function drawSpontFrame(t) {
+  const x=clearCanvas('cSpont');
+  const W=700,H=200;
+  // Energy levels
+  const e1y=150,e2y=60,ex=120;
+  x.strokeStyle='#333860'; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(ex,e1y); x.lineTo(ex+80,e1y); x.stroke(); // E1
+  x.beginPath(); x.moveTo(ex,e2y); x.lineTo(ex+80,e2y); x.stroke(); // E2
+  label(x,'E₁ (Ground)',ex+40,e1y+15,DIM,11);
+  label(x,'E₂ (Excited)',ex+40,e2y-8,YELLOW,11);
+  // Atom circle
+  const phase = Math.min(t/40,1);
+  const ay = e2y + (e1y-e2y)*phase;
+  x.beginPath(); x.arc(ex+40,ay,12,0,Math.PI*2);
+  x.fillStyle=phase<1?YELLOW:'#3b82f6'; x.fill();
+  x.strokeStyle=WHITE; x.lineWidth=1; x.stroke();
+  label(x,'e⁻',ex+40,ay+4,WHITE,10);
+  // Emit photon
+  if(phase>0.5) {
+    const px = ex+80+(phase-0.5)*400;
+    const py = ay;
+    // Wavy photon
+    x.beginPath();
+    for(let i=0;i<60*(phase-0.5)*2;i++) {
+      const xi=px+i*3-60*(phase-0.5)*6/2;
+      const yi=py+Math.sin(i*0.6)*8;
+      i===0?x.moveTo(xi,yi):x.lineTo(xi,yi);
     }
-
-    printf("Array elements: ");
-    for (int i = 0; i < size; i++)
-    {
-        printf("%d ", arr[i]);
-    }
-    printf("\\n");
+    x.strokeStyle=YELLOW; x.lineWidth=2; x.stroke();
+    // photon dot
+    x.beginPath(); x.arc(px+40,py,6,0,Math.PI*2);
+    x.fillStyle=YELLOW; x.fill();
+    // arrow
+    if(px+60<W-40) arrow(x,px+55,py,px+80,py-20,YELLOW);
+    label(x,'Photon (hν)',px+40,py-18,YELLOW,11);
+  }
+  // Labels
+  label(x,'SPONTANEOUS EMISSION',350,20,PINK,13);
+  label(x,'Atom randomly drops & emits photon in random direction',350,H-10,DIM,11);
 }
 
-int main()
-{
-    int arr[MAX_SIZE] = {10,20,30,40,50,60,70,80,90,100};
-    int size = 10;
-    int choice, position;
+function startSpont(){
+  if(spontAF) cancelAnimationFrame(spontAF);
+  spontT=0;
+  function loop(){
+    drawSpontFrame(spontT);
+    if(spontT<120){spontT++;spontAF=requestAnimationFrame(loop);}
+  }
+  loop();
+}
+function resetSpont(){
+  if(spontAF) cancelAnimationFrame(spontAF);
+  drawSpontFrame(0);
+}
+drawSpontFrame(0);
 
-    while (1)
-    {
-        printf("\\nMenu:\\n");
-        printf("1. Delete element\\n");
-        printf("2. Display array\\n");
-        printf("3. Exit\\n");
-        printf("Enter your choice: ");
-
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input. Exiting.\\n");
-            return 0;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            printf("Enter position (1 to %d): ", size);
-            scanf("%d", &position);
-            deleteAtPosition(arr, &size, position);
-            break;
-        case 2:
-            displayArray(arr, size);
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            return 0;
-        default:
-            printf("Invalid choice.\\n");
-        }
+// ═══════════════════════════════════════
+// 2. STIMULATED EMISSION
+// ═══════════════════════════════════════
+let stimAF=null, stimT=0;
+function drawStimFrame(t) {
+  const x=clearCanvas('cStim');
+  const W=700,H=200;
+  // Atom
+  const e1y=145,e2y=65,ax=300;
+  x.strokeStyle='#222a50'; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(ax-30,e1y); x.lineTo(ax+30,e1y); x.stroke();
+  x.beginPath(); x.moveTo(ax-30,e2y); x.lineTo(ax+30,e2y); x.stroke();
+  label(x,'E₁',ax,e1y+13,DIM,10);
+  label(x,'E₂',ax,e2y-8,YELLOW,10);
+  // Electron in excited state
+  const phase=Math.min(t/50,1);
+  const ey=e2y+(e1y-e2y)*phase;
+  x.beginPath(); x.arc(ax,ey,11,0,Math.PI*2);
+  x.fillStyle=phase<1?YELLOW:'#3b82f6'; x.fill();
+  x.strokeStyle=WHITE; x.lineWidth=1; x.stroke();
+  label(x,'e⁻',ax,ey+4,WHITE,10);
+  // Incoming photon
+  const ipx=40+Math.min(t*4,ax-60);
+  drawPhoton(x,ipx,105,PINK,'in');
+  // If triggered: 2 outgoing photons
+  if(t>50){
+    const op=Math.min((t-50)*5,W-ax-60);
+    drawPhoton(x,ax+40+op,95,GREEN,'');
+    drawPhoton(x,ax+40+op,115,CYAN,'');
+    if(t>55){
+      label(x,'2 Identical Photons →',ax+80+(op/2),75,CYAN,11);
+      label(x,'Same phase, direction, frequency',ax+80+(op/2),88,DIM,10);
     }
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'Menu:'},{t:'o',s:'1. Delete element'},{t:'o',s:'2. Display array'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 50 60 70 80 90 100 '},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter position (1 to 10): '},{t:'u',s:'5'},{t:'o',s:'Deleted element: 50'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Array elements: 10 20 30 40 60 70 80 90 100 '},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-3:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-
-long long factorial(int n)
-{
-    if (n < 0)
-    {
-        return -1;
-    }
-
-    if (n == 0 || n == 1)
-    {
-        return 1;
-    }
-
-    return n * factorial(n - 1);
+  }
+  label(x,'STIMULATED EMISSION',350,20,GREEN,13);
+  if(t<50) label(x,'Incoming photon approaching excited atom...',350,H-10,DIM,11);
+  else label(x,'Stimulated! 1 photon in → 2 coherent photons out',350,H-10,CYAN,11);
 }
 
-int main()
-{
-    int num;
-
-    printf("Enter a number: ");
-
-    if (scanf("%d", &num) != 1)
-    {
-        printf("Invalid input.\\n");
-        return 0;
-    }
-
-    long long result = factorial(num);
-
-    if (result == -1)
-    {
-        printf("Factorial not defined for negative numbers.\\n");
-    }
-    else
-    {
-        printf("Factorial of %d is: %lld\\n", num, result);
-    }
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'p',s:'Enter a number: '},{t:'u',s:'7'},{t:'o',s:'Factorial of 7 is: 5040'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.001 s'},{t:'i',s:'Press ENTER to continue.'}]},
-4:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define SIZE 5
-
-int top = -1;
-int STK[SIZE];
-
-int isfull()
-{
-    return (top == SIZE - 1);
+function drawPhoton(x,px,py,color,tag) {
+  x.beginPath();
+  for(let i=0;i<30;i++){
+    const xi=px-30+i*2;
+    const yi=py+Math.sin(i*0.7)*7;
+    i===0?x.moveTo(xi,yi):x.lineTo(xi,yi);
+  }
+  x.strokeStyle=color; x.lineWidth=2; x.stroke();
+  x.beginPath(); x.arc(px,py,5,0,Math.PI*2);
+  x.fillStyle=color; x.fill();
+  if(tag) label(x,tag,px-16,py-12,color,9);
 }
 
-int isempty()
-{
-    return (top == -1);
+function startStim(){
+  if(stimAF) cancelAnimationFrame(stimAF);
+  stimT=0;
+  function loop(){
+    drawStimFrame(stimT);
+    if(stimT<120){stimT++;stimAF=requestAnimationFrame(loop);}
+  }
+  loop();
 }
+function resetStim(){ if(stimAF) cancelAnimationFrame(stimAF); drawStimFrame(0); }
+drawStimFrame(0);
 
-void push(int val)
-{
-    if (isfull())
-    {
-        printf("----- Stack is FULL -----\\n");
+// ═══════════════════════════════════════
+// 3. POPULATION INVERSION
+// ═══════════════════════════════════════
+let popAF=null, popT=0;
+const popAtoms=[
+  {x:80,y:0,ex:false},{x:150,y:0,ex:false},{x:220,y:0,ex:false},
+  {x:290,y:0,ex:false},{x:360,y:0,ex:false},{x:430,y:0,ex:false},
+  {x:500,y:0,ex:false},{x:570,y:0,ex:false}
+];
+
+function drawPopFrame(t){
+  const x=clearCanvas('cPop');
+  const W=700,H=220;
+  const e1y=175,e2y=80;
+  const excitedCount=Math.min(Math.floor(t/8),6);
+  // Title
+  const inv=(excitedCount>=5);
+  label(x, inv?'✓ POPULATION INVERSION ACHIEVED!':'Pumping atoms to excited state...', 350,22,inv?GREEN:YELLOW,12);
+  // Levels
+  [40,650].forEach(lx=>{
+    x.strokeStyle='#222a50'; x.lineWidth=1;
+    x.beginPath(); x.moveTo(lx,e1y); x.lineTo(lx+100,e1y); x.stroke();
+    x.beginPath(); x.moveTo(lx,e2y); x.lineTo(lx+100,e2y); x.stroke();
+    label(x,'E₁',lx+50,e1y+12,DIM,9);
+    label(x,'E₂',lx+50,e2y-8,YELLOW,9);
+  });
+  // Atoms
+  const spacing=75;
+  for(let i=0;i<8;i++){
+    const ax=55+i*spacing;
+    const excited=(i<excitedCount);
+    const ay=excited?e2y:e1y;
+    x.beginPath(); x.arc(ax,ay,10,0,Math.PI*2);
+    x.fillStyle=excited?YELLOW:'#3b82f6'; x.fill();
+    x.strokeStyle=WHITE; x.lineWidth=.5; x.stroke();
+    label(x,'e',ax,ay+4,WHITE,9);
+    if(excited){
+      x.strokeStyle='rgba(255,214,10,.2)';
+      x.lineWidth=8; x.beginPath();
+      x.arc(ax,ay,14,0,Math.PI*2); x.stroke();
     }
-    else
-    {
-        top++;
-        STK[top] = val;
-        printf("Pushed %d into stack.\\n", val);
+  }
+  // Counter
+  const ground=8-excitedCount, excited_c=excitedCount;
+  x.fillStyle='#0d0f28'; x.fillRect(W-160,50,140,110);
+  x.strokeStyle=var_border; x.lineWidth=1; x.strokeRect(W-160,50,140,110);
+  label(x,'📊 COUNT',W-90,70,DIM,10);
+  label(x,'Ground N₁: '+ground,W-90,92,BLUE,11);
+  label(x,'Excited N₂: '+excited_c,W-90,110,YELLOW,11);
+  x.strokeStyle=excited_c>ground?GREEN:PINK;
+  x.lineWidth=1.5; x.setLineDash([3,3]);
+  x.beginPath(); x.moveTo(W-155,120); x.lineTo(W-25,120); x.stroke();
+  x.setLineDash([]);
+  const status=excited_c>ground?'N₂ > N₁ ✓':'N₂ ≤ N₁';
+  label(x,status,W-90,138,excited_c>ground?GREEN:PINK,11);
+  // Pump arrows
+  if(t>0 && t<60){
+    const i=Math.floor(t/8);
+    if(i<8){
+      const ax=55+i*spacing;
+      arrow(x,ax,e1y-20,ax,e2y+20,PINK,2);
+      label(x,'pump',ax,e1y-28,PINK,9);
     }
+  }
 }
-
-void display()
-{
-    if (isempty())
-    {
-        printf("----- Stack is EMPTY -----\\n");
-    }
-    else
-    {
-        printf("Stack contents (top to bottom):\\n");
-        for (int i = top; i >= 0; i--)
-        {
-            printf("%d\\n", STK[i]);
-        }
-    }
+const var_border='#1e2240';
+function startPop(){
+  if(popAF) cancelAnimationFrame(popAF);
+  popT=0;
+  function loop(){
+    drawPopFrame(popT);
+    if(popT<80){popT++;popAF=requestAnimationFrame(loop);}
+  }
+  loop();
 }
+function resetPop(){ if(popAF) cancelAnimationFrame(popAF); drawPopFrame(0); }
+drawPopFrame(0);
 
-int main()
-{
-    int choice, val;
+// ═══════════════════════════════════════
+// 4. METASTABLE STATE - static diagram
+// ═══════════════════════════════════════
+(function drawMeta(){
+  const x=clearCanvas('cMeta');
+  const W=700,H=260;
+  // Energy levels
+  const levels=[
+    {y:220,label:'E₀  Ground State',color:'#3b82f6'},
+    {y:155,label:'E₁  Metastable State (long-lived ~10⁻³s)',color:CYAN},
+    {y:80,label:'E₂  Pump Level (short-lived ~10⁻⁸s)',color:YELLOW},
+  ];
+  levels.forEach(l=>{
+    x.strokeStyle=l.color; x.lineWidth=2;
+    x.beginPath(); x.moveTo(80,l.y); x.lineTo(380,l.y); x.stroke();
+    label(x,l.label,400,l.y+4,l.color,11,'left');
+  });
+  // Atoms
+  const atoms=[{y:220,c:'#3b82f6'},{y:155,c:CYAN},{y:80,c:YELLOW}];
+  atoms.forEach((a,i)=>{
+    x.beginPath(); x.arc(200,a.y,12,0,Math.PI*2);
+    x.fillStyle=a.c; x.fill();
+    x.strokeStyle=WHITE; x.lineWidth=1; x.stroke();
+  });
+  // Arrows with labels
+  // pump
+  arrow(x,140,210,140,90,PINK,2);
+  label(x,'① Pump',115,155,PINK,10,'right');
+  // quick drop to metastable
+  arrow(x,180,88,180,163,YELLOW,2);
+  label(x,'② Fast\ndrop',190,125,YELLOW,10,'left');
+  // lasing transition
+  arrow(x,230,148,230,228,GREEN,2.5);
+  label(x,'③ Laser\nemission',248,185,GREEN,11,'left');
+  // accumulation indicator
+  x.fillStyle='rgba(0,245,212,0.1)';
+  x.fillRect(82,143,296,26);
+  label(x,'ATOMS ACCUMULATE HERE → Population Inversion',230,158,CYAN,10);
+  label(x,'METASTABLE STATE — THE KEY TO LASING',350,18,CYAN,12);
+})();
 
-    do
-    {
-        printf("\\n---------------------------------\\n");
-        printf("1. Push\\n2. Display\\n3. Exit\\n");
-        printf("---------------------------------\\n");
-        printf("Enter your choice: ");
-
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input.\\n");
-            return 0;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            printf("Enter value: ");
-            scanf("%d", &val);
-            push(val);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            break;
-        default:
-            printf("Invalid choice.\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Push'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'10'},{t:'o',s:'Pushed 10 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'20'},{t:'o',s:'Pushed 20 into stack.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-5:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define SIZE 5
-
-int top = 4;
-int STK[SIZE] = {10, 20, 30, 50, 40};
-
-int isempty()
-{
-    return (top == -1);
+// ═══════════════════════════════════════
+// 5. RESONANT CAVITY
+// ═══════════════════════════════════════
+let cavAF=null, cavT=0;
+function drawCavFrame(t){
+  const x=clearCanvas('cCavity');
+  const W=700,H=200;
+  const m1x=60,m2x=600,my=100,mh=70;
+  // Gain medium
+  x.fillStyle='rgba(76,201,240,0.08)';
+  x.fillRect(m1x+20,my-30,m2x-m1x-40,60);
+  label(x,'GAIN MEDIUM (active laser material)',330,my+25,DIM,10);
+  // Mirrors
+  // Mirror 1 - full
+  x.fillStyle='rgba(0,245,212,0.3)';
+  x.fillRect(m1x-8,my-mh/2,12,mh);
+  x.strokeStyle=CYAN; x.lineWidth=2;
+  x.beginPath(); x.moveTo(m1x,my-mh/2); x.lineTo(m1x,my+mh/2); x.stroke();
+  label(x,'100%',m1x,my-mh/2-8,CYAN,10);
+  label(x,'Mirror',m1x,my-mh/2-20,CYAN,10);
+  // Mirror 2 - partial
+  x.fillStyle='rgba(255,165,0,0.2)';
+  for(let i=0;i<4;i++){
+    x.fillRect(m2x-4,my-mh/2+i*18,8,12);
+  }
+  x.strokeStyle=YELLOW; x.lineWidth=2;
+  x.beginPath(); x.moveTo(m2x,my-mh/2); x.lineTo(m2x,my+mh/2); x.stroke();
+  label(x,'~95%',m2x,my-mh/2-8,YELLOW,10);
+  label(x,'Output',m2x,my-mh/2-20,YELLOW,10);
+  // Bouncing photon beam
+  const period=160;
+  const phase=(t%period)/period;
+  const bx = phase<0.5? m1x+20+(m2x-m1x-40)*phase*2 : m2x-20-(m2x-m1x-40)*(phase-0.5)*2;
+  x.beginPath(); x.arc(bx,my,7,0,Math.PI*2);
+  x.fillStyle=RED; x.fill();
+  x.shadowColor=RED; x.shadowBlur=16;
+  x.beginPath(); x.arc(bx,my,7,0,Math.PI*2);
+  x.fillStyle=RED; x.fill();
+  x.shadowBlur=0;
+  // Beam tail
+  for(let i=1;i<12;i++){
+    const alpha=1-i/12;
+    const dp=i*(phase<0.5?-4:4);
+    x.beginPath(); x.arc(bx-dp,my,5-i*.3,0,Math.PI*2);
+    x.fillStyle=`rgba(255,56,56,${alpha*0.4})`; x.fill();
+  }
+  // Output beam leaks
+  if(phase>0.45 && phase<0.55){
+    const prog=(phase-0.45)/0.1;
+    x.strokeStyle=`rgba(255,214,10,${prog})`;
+    x.lineWidth=3; x.beginPath();
+    x.moveTo(m2x,my); x.lineTo(m2x+80*prog,my);
+    x.stroke();
+    x.fillStyle=YELLOW; x.font='10px IBM Plex Mono';
+    x.textAlign='left'; x.fillText('OUTPUT BEAM',m2x+5,my-12);
+  }
+  label(x,'RESONANT CAVITY — Light bouncing back & forth, amplifying',350,18,PINK,12);
 }
-
-int pop()
-{
-    if (isempty())
-    {
-        printf("----- Stack is EMPTY -----\\n");
-        return -1;
-    }
-    else
-    {
-        int val = STK[top];
-        top--;
-        return val;
-    }
+function startCavity(){
+  if(cavAF) cancelAnimationFrame(cavAF);
+  cavT=0;
+  function loop(){
+    drawCavFrame(cavT);
+    cavT++;
+    if(cavT<400) cavAF=requestAnimationFrame(loop);
+  }
+  loop();
 }
+function resetCavity(){ if(cavAF) cancelAnimationFrame(cavAF); drawCavFrame(0); }
+drawCavFrame(0);
 
-void display()
-{
-    if (isempty())
-    {
-        printf("----- Stack is EMPTY -----\\n");
+// ═══════════════════════════════════════
+// 6. He-Ne LASER
+// ═══════════════════════════════════════
+let heneAF=null,heneT=0;
+function drawHeneFrame(t){
+  const x=clearCanvas('cHene');
+  const W=700,H=280;
+  // Tube
+  x.fillStyle='rgba(100,100,200,0.06)';
+  x.beginPath(); x.roundRect(60,80,500,100,8); x.fill();
+  x.strokeStyle='#2a3060'; x.lineWidth=1.5;
+  x.beginPath(); x.roundRect(60,80,500,100,8); x.stroke();
+  label(x,'Glass Tube (He + Ne Gas Mixture)',310,75,DIM,11);
+  // Electrodes
+  [100,520].forEach((ex,i)=>{
+    x.fillStyle='#444'; x.fillRect(ex-5,100,10,60);
+    label(x,i===0?'(+)':'(−)',ex,98,YELLOW,10);
+  });
+  // He and Ne atoms
+  const heCount=12, neCount=6;
+  const hePos=[],nePos=[];
+  for(let i=0;i<heCount;i++){
+    hePos.push({x:140+i*26,y:100+Math.sin(i*1.5)*15+8});
+  }
+  for(let i=0;i<neCount;i++){
+    nePos.push({x:160+i*50,y:140+Math.cos(i*2)*12});
+  }
+  // Animate collision
+  const phase=Math.min(t/60,1);
+  hePos.forEach((a,i)=>{
+    x.beginPath(); x.arc(a.x,a.y,8,0,Math.PI*2);
+    const excited=(i<Math.floor(phase*heCount));
+    x.fillStyle=excited?YELLOW:'rgba(100,150,255,0.6)'; x.fill();
+    x.strokeStyle=WHITE; x.lineWidth=.5; x.stroke();
+    if(i===0) label(x,'He',a.x,a.y+14,DIM,8);
+  });
+  nePos.forEach((a,i)=>{
+    x.beginPath(); x.arc(a.x,a.y,10,0,Math.PI*2);
+    const excited=(i<Math.floor(phase*neCount));
+    x.fillStyle=excited?RED:'rgba(255,100,100,0.4)'; x.fill();
+    x.strokeStyle=WHITE; x.lineWidth=.5; x.stroke();
+    if(excited){ x.shadowColor=RED; x.shadowBlur=10; }
+    x.beginPath(); x.arc(a.x,a.y,10,0,Math.PI*2); x.fill();
+    x.shadowBlur=0;
+    if(i===0) label(x,'Ne',a.x,a.y+16,DIM,8);
+  });
+  // Discharge sparks
+  if(t>0 && t<60 && t%10<5){
+    for(let i=0;i<3;i++){
+      const sx=120+Math.random()*400;
+      const sy=105+Math.random()*70;
+      x.strokeStyle='rgba(255,214,10,0.5)'; x.lineWidth=1;
+      x.beginPath(); x.moveTo(sx,sy); x.lineTo(sx+10,sy+10); x.stroke();
     }
-    else
-    {
-        printf("Stack contents (top to bottom):\\n");
-        for (int i = top; i >= 0; i--)
-        {
-            printf("%d\\n", STK[i]);
-        }
-    }
+  }
+  // Laser beam output
+  if(t>60){
+    const bp=Math.min((t-60)/40,1);
+    const grad=x.createLinearGradient(560,130,560+200*bp,130);
+    grad.addColorStop(0,'rgba(255,56,56,0.9)');
+    grad.addColorStop(1,'rgba(255,56,56,0.1)');
+    x.fillStyle=grad;
+    x.fillRect(560,125,200*bp,10);
+    x.strokeStyle=RED; x.lineWidth=2;
+    x.beginPath(); x.moveTo(560,130); x.lineTo(560+200*bp,130); x.stroke();
+    label(x,'632.8 nm Laser Beam',655,120,RED,10);
+  }
+  // Steps
+  const steps=['① Discharge excites He','② He collides with Ne (resonant transfer)','③ Ne achieves population inversion → lasing!'];
+  const si=Math.min(Math.floor(t/60),2);
+  steps.forEach((s,i)=>{
+    const active=i<=si;
+    label(x,s,350,200+i*22,active?CYAN:DIM,i===si?12:10);
+  });
+  label(x,'He-Ne LASER — Working Principle',350,22,PINK,13);
 }
-
-int main()
-{
-    int choice, val;
-
-    do
-    {
-        printf("\\n---------------------------------\\n");
-        printf("1. Pop\\n2. Display\\n3. Exit\\n");
-        printf("---------------------------------\\n");
-        printf("Enter your choice: ");
-
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input.\\n");
-            return 0;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            val = pop();
-            if (val != -1)
-                printf("Popped value = %d\\n", val);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            break;
-        default:
-            printf("Invalid choice.\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'---------------------------------'},{t:'o',s:'1. Pop'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'---------------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Stack contents (top to bottom):'},{t:'o',s:'40'},{t:'o',s:'50'},{t:'o',s:'30'},{t:'o',s:'20'},{t:'o',s:'10'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Popped value = 40'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-6:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define SIZE 5
-
-int rear = -1;
-int front = 0;
-int que[SIZE];
-
-int isquefull()
-{
-    return (rear == SIZE - 1);
+function startHene(){
+  if(heneAF) cancelAnimationFrame(heneAF);
+  heneT=0;
+  function loop(){
+    drawHeneFrame(heneT);
+    heneT++;
+    if(heneT<200) heneAF=requestAnimationFrame(loop);
+  }
+  loop();
 }
+function resetHene(){ if(heneAF) cancelAnimationFrame(heneAF); drawHeneFrame(0); }
+drawHeneFrame(0);
 
-int isqueempty()
-{
-    return (front > rear);
+// ═══════════════════════════════════════
+// 7. LIDAR
+// ═══════════════════════════════════════
+let lidarAF=null,lidarT=0,lidarDist=null;
+function drawLidarFrame(t){
+  const x=clearCanvas('cLidar');
+  const W=700,H=200;
+  // Emitter
+  x.fillStyle='#1a1f3a';
+  x.fillRect(40,70,70,60);
+  x.strokeStyle=CYAN; x.lineWidth=1.5;
+  x.strokeRect(40,70,70,60);
+  label(x,'LIDAR',75,96,CYAN,10);
+  label(x,'Sensor',75,108,DIM,9);
+  // Target object (building/tree)
+  x.fillStyle='#1a2040';
+  x.fillRect(560,50,60,120);
+  x.strokeStyle='#2a3060'; x.lineWidth=1;
+  x.strokeRect(560,50,60,120);
+  label(x,'Target',590,172,DIM,10);
+  // Ground
+  x.strokeStyle='#1e2240'; x.lineWidth=1;
+  x.beginPath(); x.moveTo(0,170); x.lineTo(W,170); x.stroke();
+  // Pulse animation
+  const speed=5;
+  if(t<100){
+    const px=110+t*speed;
+    if(px<560){
+      x.beginPath(); x.arc(px,100,6,0,Math.PI*2);
+      x.fillStyle=GREEN; x.fill();
+      x.shadowColor=GREEN; x.shadowBlur=15;
+      x.beginPath(); x.arc(px,100,6,0,Math.PI*2); x.fill();
+      x.shadowBlur=0;
+      // Trail
+      for(let i=1;i<8;i++){
+        x.beginPath(); x.arc(px-i*7,100,5-i*.5,0,Math.PI*2);
+        x.fillStyle=`rgba(57,255,20,${0.5-i*.06})`; x.fill();
+      }
+      label(x,'▶ Laser Pulse',px,88,GREEN,10);
+    } else {
+      // Hit
+      x.fillStyle='rgba(255,214,10,0.5)';
+      x.fillRect(555,50,20,120);
+      lidarDist=t;
+    }
+  } else if(t>=100){
+    const rp=110+(200-t)*speed;
+    if(rp>110){
+      x.beginPath(); x.arc(rp,100,6,0,Math.PI*2);
+      x.fillStyle=YELLOW; x.fill();
+      x.shadowColor=YELLOW; x.shadowBlur=15;
+      x.beginPath(); x.arc(rp,100,6,0,Math.PI*2); x.fill();
+      x.shadowBlur=0;
+      label(x,'◀ Return',rp,88,YELLOW,10);
+    } else if(t>160){
+      const d=Math.round(450*0.15/10);
+      label(x,'✓ Distance = c × Δt / 2',300,60,GREEN,12);
+      label(x,'= 3×10⁸ × '+((200-100)*0.002).toFixed(3)+'s / 2 ≈ '+(450*0.5).toFixed(0)+'  units',300,80,CYAN,11);
+    }
+  }
+  label(x,'LIDAR — Time of Flight Measurement',350,20,PINK,12);
 }
-
-void enqueue(int val)
-{
-    if (isquefull())
-    {
-        printf("----- Queue is FULL -----\\n");
-    }
-    else
-    {
-        rear++;
-        que[rear] = val;
-        printf("Inserted %d into queue.\\n", val);
-    }
+function startLidar(){
+  if(lidarAF) cancelAnimationFrame(lidarAF);
+  lidarT=0;
+  function loop(){
+    drawLidarFrame(lidarT);
+    lidarT++;
+    if(lidarT<200) lidarAF=requestAnimationFrame(loop);
+  }
+  loop();
 }
+function resetLidar(){ if(lidarAF) cancelAnimationFrame(lidarAF); drawLidarFrame(0); }
+drawLidarFrame(0);
 
-void display()
-{
-    if (isqueempty())
-    {
-        printf("----- Queue is EMPTY -----\\n");
-    }
-    else
-    {
-        printf("Queue contents:\\n");
-        for (int i = front; i <= rear; i++)
-        {
-            printf("%d\\n", que[i]);
-        }
-    }
+// ═══════════════════════════════════════
+// 8. TIR Interactive
+// ═══════════════════════════════════════
+function drawTIR(){
+  const x=clearCanvas('cTIR');
+  const W=700,H=280;
+  const angle=parseInt(C('tirAngle').value);
+  C('tirAngleVal').textContent=angle+'°';
+  const n1=1.5,n2=1.0;
+  const criticalDeg=Math.asin(n2/n1)*180/Math.PI; // ~41.8
+  // Interface
+  x.fillStyle='rgba(76,201,240,0.08)';
+  x.fillRect(0,0,W,H/2); // rarer medium (air)
+  x.fillStyle='rgba(0,245,212,0.08)';
+  x.fillRect(0,H/2,W,H/2); // denser medium (glass)
+  x.strokeStyle='#1e2240'; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(0,H/2); x.lineTo(W,H/2); x.stroke();
+  label(x,'Rarer Medium (n₂ = 1.0, Air)',350,20,DIM,11);
+  label(x,'Denser Medium (n₁ = 1.5, Glass)',350,H-15,DIM,11);
+  // Normal line
+  x.setLineDash([5,5]); x.strokeStyle='#2a3060';
+  x.beginPath(); x.moveTo(350,20); x.lineTo(350,H-20); x.stroke();
+  x.setLineDash([]);
+  // Incident ray
+  const rad=angle*Math.PI/180;
+  const ix=350-Math.sin(rad)*120;
+  const iy=H/2-Math.cos(rad)*120;
+  arrow(x,ix,iy,350,H/2,CYAN,2);
+  label(x,'θ = '+angle+'°',ix+10,iy+20,CYAN,11,'left');
+  // Reflected ray
+  arrow(x,350,H/2,350+Math.sin(rad)*120,H/2-Math.cos(rad)*120,BLUE,2);
+  // Refracted or TIR
+  if(angle<criticalDeg){
+    const sinT2=n1*Math.sin(rad)/n2;
+    const t2=Math.asin(Math.min(sinT2,1));
+    arrow(x,350,H/2,350+Math.sin(t2)*100,H/2+Math.cos(t2)*100,'rgba(255,214,10,0.8)',2);
+    label(x,'Refracted ray',350+Math.sin(t2)*60,H/2+Math.cos(t2)*60+14,YELLOW,10);
+    label(x,'θ < θ_c  → Partial reflection + Refraction',350,H/2-12,PINK,11);
+  } else {
+    // TIR - bright reflected
+    arrow(x,350,H/2,350+Math.sin(rad)*140,H/2-Math.cos(rad)*140,GREEN,3);
+    // Glow on interface
+    x.strokeStyle='rgba(57,255,20,0.3)'; x.lineWidth=8;
+    x.beginPath(); x.moveTo(220,H/2); x.lineTo(480,H/2); x.stroke();
+    const msg=angle>=criticalDeg?'⚡ TOTAL INTERNAL REFLECTION! (θ ≥ θ_c = '+criticalDeg.toFixed(1)+'°)':'';
+    label(x,msg,350,H/2-12,GREEN,12);
+  }
+  // Critical angle marker
+  x.strokeStyle='rgba(255,214,10,0.4)'; x.lineWidth=1; x.setLineDash([4,4]);
+  const cr=criticalDeg*Math.PI/180;
+  x.beginPath(); x.moveTo(350-Math.sin(cr)*80,H/2-Math.cos(cr)*80);
+  x.lineTo(350,H/2); x.stroke();
+  x.setLineDash([]);
+  label(x,'θ_c≈'+criticalDeg.toFixed(1)+'°',350-Math.sin(cr)*90,H/2-Math.cos(cr)*90-5,'rgba(255,214,10,0.6)',9);
+  label(x,'TIR — Drag slider to change angle',350,H/2-25,PINK,11);
+  label(x,'Normal',358,30,DIM,9,'left');
 }
+C('tirAngle').addEventListener('input',drawTIR);
+drawTIR();
 
-int main()
-{
-    int choice, val;
+// ═══════════════════════════════════════
+// 9. ACCEPTANCE ANGLE
+// ═══════════════════════════════════════
+(function drawAccept(){
+  const x=clearCanvas('cAccept');
+  const W=700,H=220;
+  const cy=H/2, r=50, flen=520;
+  const fx=120,fy=cy;
+  // Fibre core
+  x.fillStyle='rgba(76,201,240,0.15)';
+  x.fillRect(fx,fy-r,flen,r*2);
+  x.strokeStyle=CYAN; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(fx,fy-r); x.lineTo(fx+flen,fy-r); x.stroke();
+  x.beginPath(); x.moveTo(fx,fy+r); x.lineTo(fx+flen,fy+r); x.stroke();
+  label(x,'CORE (n₁)',350,cy+4,CYAN,11);
+  // Cladding
+  x.strokeStyle='#1e3050'; x.setLineDash([4,4]);
+  x.beginPath(); x.moveTo(fx,fy-r-15); x.lineTo(fx+flen,fy-r-15); x.stroke();
+  x.beginPath(); x.moveTo(fx,fy+r+15); x.lineTo(fx+flen,fy+r+15); x.stroke();
+  x.setLineDash([]);
+  label(x,'CLADDING (n₂)',350,fy-r-20,DIM,10);
+  // Acceptance cone
+  const θa=30*Math.PI/180;
+  x.fillStyle='rgba(57,255,20,0.06)';
+  x.beginPath(); x.moveTo(fx-80,cy); x.lineTo(fx,fy-r); x.lineTo(fx,fy+r); x.closePath(); x.fill();
+  x.strokeStyle=GREEN; x.lineWidth=1.5;
+  x.beginPath(); x.moveTo(fx-80,cy); x.lineTo(fx,fy-r); x.stroke();
+  x.beginPath(); x.moveTo(fx-80,cy); x.lineTo(fx,fy+r); x.stroke();
+  label(x,'θ_a',fx-60,cy-14,GREEN,11);
+  label(x,'Acceptance\nCone',fx-68,cy+20,GREEN,10);
+  // Rays
+  [[0,GREEN,'Guided (within acceptance angle)'],[40,PINK,'Escapes (outside acceptance angle)']]
+    .forEach(([ang,col,lbl],i)=>{
+      const r2=ang*Math.PI/180;
+      const ex2=fx+Math.cos(r2)*300,ey2=fy+Math.sin(r2)*300;
+      arrow(x,fx-80,cy,fx+160*Math.cos(r2*0.5),cy+160*Math.sin(r2*0.5)*0.6,col,2);
+      if(i===0) label(x,lbl,250,cy-25,col,10);
+      else label(x,lbl,250,cy+45,col,10);
+    });
+  label(x,'ACCEPTANCE ANGLE — Only light within the cone is guided',350,18,BLUE,12);
+})();
 
-    do
-    {
-        printf("\\n-------------------------\\n");
-        printf("1. Enqueue\\n2. Display\\n3. Exit\\n");
-        printf("-------------------------\\n");
-        printf("Enter your choice: ");
+// ═══════════════════════════════════════
+// 10. NA DERIVATION GEOMETRY
+// ═══════════════════════════════════════
+(function drawNA(){
+  const x=clearCanvas('cNA');
+  const W=700,H=250;
+  const cy=H/2,flen=500,fx=150;
+  const n1=1.5,n2=1.46;
+  const θa=Math.asin(Math.sqrt(n1*n1-n2*n2))*180/Math.PI;
+  const θc=Math.asin(n2/n1)*180/Math.PI;
+  // Core
+  x.fillStyle='rgba(76,201,240,0.1)';
+  x.fillRect(fx,cy-40,flen,80);
+  x.strokeStyle=CYAN; x.lineWidth=1.5;
+  [cy-40,cy+40].forEach(y=>{
+    x.beginPath(); x.moveTo(fx,y); x.lineTo(fx+flen,y); x.stroke();
+  });
+  label(x,'Core n₁',fx+250,cy+4,CYAN,10);
+  // Cladding
+  x.strokeStyle='#1e3050'; x.lineWidth=1; x.setLineDash([3,3]);
+  [cy-65,cy+65].forEach(y=>{
+    x.beginPath(); x.moveTo(fx,y); x.lineTo(fx+flen,y); x.stroke();
+  });
+  x.setLineDash([]);
+  label(x,'Cladding n₂',fx+250,cy-52,DIM,9);
+  // Incident ray
+  const θaR=θa*Math.PI/180;
+  arrow(x,fx-80,cy-40*0.7,fx,cy,YELLOW,2.5);
+  // Inside core ray
+  const θrR=(90-θc)*Math.PI/180;
+  arrow(x,fx,cy,fx+200,cy-Math.tan(θrR)*200,CYAN,2);
+  // TIR at boundary
+  arrow(x,fx+200,cy-40,fx+400,cy+40,CYAN,2);
+  // Angles
+  label(x,'θ_a='+θa.toFixed(1)+'°',fx-40,cy-30,YELLOW,10);
+  label(x,'θ_r',fx+50,cy-18,CYAN,9);
+  label(x,'φ=90°-θ_r',fx+175,cy-45,GREEN,9);
+  label(x,'TIR',fx+320,cy-5,GREEN,10);
+  // Formula box
+  x.fillStyle='#0a0c1e'; x.fillRect(430,30,240,80);
+  x.strokeStyle=YELLOW; x.lineWidth=1; x.strokeRect(430,30,240,80);
+  label(x,'NA = n₀·sin(θ_a)',550,55,YELLOW,12);
+  label(x,'= √(n₁²-n₂²)',550,75,CYAN,12);
+  label(x,'= √('+n1+'²-'+n2+'²) = '+Math.sqrt(n1*n1-n2*n2).toFixed(3),550,95,GREEN,11);
+  label(x,'NUMERICAL APERTURE — Derivation Geometry',350,18,BLUE,12);
+})();
 
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input.\\n");
-            return 0;
-        }
+// ═══════════════════════════════════════
+// 11. STEP vs GRADED INDEX
+// ═══════════════════════════════════════
+(function drawCompare(){
+  const x=clearCanvas('cCompare');
+  const W=700,H=300;
+  // ─ Step Index ─
+  const s1x=60;
+  label(x,'STEP INDEX FIBRE',s1x+100,20,PINK,11);
+  // RI profile
+  label(x,'RI',s1x,90,DIM,9,'left');
+  x.strokeStyle='#1e2240'; x.beginPath(); x.moveTo(s1x+15,45); x.lineTo(s1x+15,130); x.stroke();
+  x.beginPath(); x.moveTo(s1x+15,130); x.lineTo(s1x+200,130); x.stroke();
+  // Step profile
+  x.strokeStyle=PINK; x.lineWidth=2;
+  x.beginPath();
+  x.moveTo(s1x+20,55); x.lineTo(s1x+80,55); x.lineTo(s1x+80,100); x.lineTo(s1x+160,100);
+  x.lineTo(s1x+160,55); x.lineTo(s1x+210,55);
+  x.stroke();
+  label(x,'n₁',s1x+105,62,PINK,10); label(x,'n₂',s1x+22,98,DIM,9);
+  label(x,'← core →',s1x+100,120,DIM,9);
+  // Ray path
+  label(x,'RAY PATH:',s1x+100,150,DIM,9);
+  const zig=[[s1x+20,180],[s1x+60,155],[s1x+100,180],[s1x+140,155],[s1x+180,180],[s1x+220,155]];
+  x.strokeStyle=RED; x.lineWidth=2; x.beginPath();
+  zig.forEach((p,i)=>i===0?x.moveTo(p[0],p[1]):x.lineTo(p[0],p[1]));
+  x.stroke();
+  x.fillStyle='rgba(255,56,56,0.1)';
+  x.fillRect(s1x+20,150,200,38);
+  x.strokeStyle='#333860'; x.lineWidth=1;
+  [150,188].forEach(y=>{ x.beginPath(); x.moveTo(s1x+20,y); x.lineTo(s1x+220,y); x.stroke(); });
+  label(x,'Sharp zigzag — HIGH dispersion',s1x+100,210,PINK,9);
+  // ─ Graded Index ─
+  const s2x=370;
+  label(x,'GRADED INDEX FIBRE',s2x+100,20,CYAN,11);
+  x.strokeStyle='#1e2240'; x.beginPath(); x.moveTo(s2x+15,45); x.lineTo(s2x+15,130); x.stroke();
+  x.beginPath(); x.moveTo(s2x+15,130); x.lineTo(s2x+200,130); x.stroke();
+  // Graded profile (parabolic)
+  x.strokeStyle=CYAN; x.lineWidth=2; x.beginPath();
+  x.moveTo(s2x+20,100);
+  for(let i=0;i<=80;i++){
+    const xi=s2x+20+i*2;
+    const ri=(i-40)/40;
+    const ni=55+ri*ri*40;
+    i===0?x.moveTo(xi,ni):x.lineTo(xi,ni);
+  }
+  x.lineTo(s2x+210,100); x.stroke();
+  label(x,'n₁',s2x+115,62,CYAN,10); label(x,'n₂',s2x+22,98,DIM,9);
+  label(x,'← core →',s2x+100,120,DIM,9);
+  // Sinusoidal ray
+  label(x,'RAY PATH:',s2x+100,150,DIM,9);
+  x.strokeStyle=CYAN; x.lineWidth=2; x.beginPath();
+  for(let i=0;i<=200;i++){
+    const xi=s2x+20+i;
+    const yi=168+Math.sin(i/25*Math.PI)*15;
+    i===0?x.moveTo(xi,yi):x.lineTo(xi,yi);
+  }
+  x.stroke();
+  x.fillStyle='rgba(76,201,240,0.08)';
+  x.fillRect(s2x+20,150,200,38);
+  x.strokeStyle='#333860'; x.lineWidth=1;
+  [150,188].forEach(y=>{ x.beginPath(); x.moveTo(s2x+20,y); x.lineTo(s2x+220,y); x.stroke(); });
+  label(x,'Smooth curve — LOW dispersion',s2x+100,210,CYAN,9);
+  // Bottom note
+  label(x,'Graded index: outer rays travel faster (lower RI), arriving at same time as inner rays',350,255,DIM,10);
+  label(x,'This self-compensation reduces modal dispersion!',350,268,CYAN,10);
+})();
 
-        switch (choice)
-        {
-        case 1:
-            printf("Enter value: ");
-            scanf("%d", &val);
-            enqueue(val);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            break;
-        default:
-            printf("Invalid choice.\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'100'},{t:'o',s:'Inserted 100 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'p',s:'Enter value: '},{t:'u',s:'200'},{t:'o',s:'Inserted 200 into queue.'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-7:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define SIZE 5
-
-int rear = 4;
-int front = 0;
-int que[SIZE] = {100, 200, 300, 400, 500};
-
-int isqueempty()
-{
-    return (front > rear);
-}
-
-int dequeue()
-{
-    if (isqueempty())
-    {
-        printf("----- Queue is EMPTY -----\\n");
-        return -1;
-    }
-    else
-    {
-        int val = que[front];
-        front++;
-        return val;
-    }
-}
-
-void display()
-{
-    if (isqueempty())
-    {
-        printf("----- Queue is EMPTY -----\\n");
-    }
-    else
-    {
-        printf("Queue contents:\\n");
-        for (int i = front; i <= rear; i++)
-        {
-            printf("%d\\n", que[i]);
-        }
-    }
-}
-
-int main()
-{
-    int choice, val;
-
-    do
-    {
-        printf("\\n-------------------------\\n");
-        printf("1. Dequeue\\n2. Display\\n3. Exit\\n");
-        printf("-------------------------\\n");
-        printf("Enter your choice: ");
-
-        if (scanf("%d", &choice) != 1)
-        {
-            printf("Invalid input.\\n");
-            return 0;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            val = dequeue();
-            if (val != -1)
-                printf("Dequeued value = %d\\n", val);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting program.\\n");
-            break;
-        default:
-            printf("Invalid choice.\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'-------------------------'},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'o',s:'-------------------------'},{t:'p',s:'Enter your choice: '},{t:'u',s:'2'},{t:'o',s:'Queue contents:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter your choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued value = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-8:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define MAX 6
-
-int queue[MAX];
-int front = -1;
-int rear = -1;
-
-void enqueue(int element)
-{
-    if ((rear + 1) % MAX == front)
-    {
-        printf("Queue is FULL\\n");
-    }
-    else if (front == -1 && rear == -1)
-    {
-        front = rear = 0;
-        queue[rear] = element;
-    }
-    else
-    {
-        rear = (rear + 1) % MAX;
-        queue[rear] = element;
-    }
-}
-
-void display()
-{
-    if (front == -1 && rear == -1)
-    {
-        printf("Queue is EMPTY\\n");
-    }
-    else
-    {
-        int i = front;
-        printf("Queue elements:\\n");
-        while (1)
-        {
-            printf("%d\\n", queue[i]);
-            if (i == rear)
-                break;
-            i = (i + 1) % MAX;
-        }
-    }
-}
-
-int main()
-{
-    int choice, x;
-
-    do
-    {
-        printf("\\n1. Enqueue\\n2. Display\\n3. Exit\\n");
-        printf("Enter choice: ");
-
-        if (scanf("%d", &choice) != 1)
-            return 0;
-
-        switch (choice)
-        {
-        case 1:
-            printf("Enter element: ");
-            scanf("%d", &x);
-            enqueue(x);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting...\\n");
-            break;
-        default:
-            printf("Invalid choice\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Enqueue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'10'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'20'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'p',s:'Enter element: '},{t:'u',s:'30'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'10'},{t:'o',s:'20'},{t:'o',s:'30'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]},
-9:{f:'main.c',code:`/******************************************************************************
-
-                        Online C Compiler.
-            Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
-
-#include <stdio.h>
-#define MAX 6
-
-int queue[MAX] = {100, 200, 300, 400, 500};
-
-int front = 0;
-int rear = 4;
-
-int dequeue()
-{
-    if (front == -1 && rear == -1)
-    {
-        printf("Queue is EMPTY\\n");
-        return -1;
-    }
-    else if (front == rear)
-    {
-        int val = queue[front];
-        front = -1;
-        rear = -1;
-        return val;
-    }
-    else
-    {
-        int val = queue[front];
-        front = (front + 1) % MAX;
-        return val;
-    }
-}
-
-void display()
-{
-    if (front == -1 && rear == -1)
-    {
-        printf("Queue is EMPTY\\n");
-    }
-    else
-    {
-        int i = front;
-        printf("Queue elements:\\n");
-        while (1)
-        {
-            printf("%d\\n", queue[i]);
-            if (i == rear)
-                break;
-            i = (i + 1) % MAX;
-        }
-    }
-}
-
-int main()
-{
-    int choice, val;
-
-    do
-    {
-        printf("\\n1. Dequeue\\n2. Display\\n3. Exit\\n");
-        printf("Enter choice: ");
-
-        if (scanf("%d", &choice) != 1)
-            return 0;
-
-        switch (choice)
-        {
-        case 1:
-            val = dequeue();
-            if (val != -1)
-                printf("Dequeued element = %d\\n", val);
-            break;
-        case 2:
-            display();
-            break;
-        case 3:
-            printf("Exiting...\\n");
-            break;
-        default:
-            printf("Invalid choice\\n");
-        }
-
-    } while (choice != 3);
-
-    return 0;
-}`,
-out:[{t:'i',s:'Compilation started...'},{t:'i',s:'Compilation successful.'},{t:'o',s:''},{t:'o',s:'1. Dequeue'},{t:'o',s:'2. Display'},{t:'o',s:'3. Exit'},{t:'p',s:'Enter choice: '},{t:'u',s:'2'},{t:'o',s:'Queue elements:'},{t:'o',s:'100'},{t:'o',s:'200'},{t:'o',s:'300'},{t:'o',s:'400'},{t:'o',s:'500'},{t:'p',s:'Enter choice: '},{t:'u',s:'1'},{t:'o',s:'Dequeued element = 100'},{t:'o',s:''},{t:'i',s:'Process returned 0 (0x0)   execution time : 0.002 s'},{t:'i',s:'Press ENTER to continue.'}]}
-};
-
-/* ════════════════════════════════════════
-   SYNTAX HIGHLIGHT
-════════════════════════════════════════ */
-function hl(r){
-  let s=r.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  if(/^\s*(\/\/|\/\*|\*)/.test(s))return`<span class="cmt">${s}</span>`;
-  s=s.replace(/(#\s*(?:include|define|ifndef|endif|pragma)\b[^\n]*)/g,'<span class="pp">$1</span>');
-  ['return','if','else','while','do','for','switch','case','break','default',
-   'void','int','long','char','float','double','unsigned','static','const','struct','typedef']
-  .forEach(k=>{s=s.replace(new RegExp(`\\b(${k})\\b`,'g'),'<span class="kw">$1</span>');});
-  s=s.replace(/\b(MAX_SIZE|SIZE|MAX|NULL)\b/g,'<span class="mac">$1</span>');
-  s=s.replace(/("(?:[^"\\]|\\.)*")/g,'<span class="str">$1</span>');
-  s=s.replace(/\b(\d+)\b/g,'<span class="num">$1</span>');
-  s=s.replace(/\b([a-zA-Z_]\w*)\s*(?=\s*\()/g,'<span class="fn">$1</span>');
-  return s;
-}
-
-/* ════════════════════════════════════════
-   RENDER
-════════════════════════════════════════ */
-let cur=null;
-function render(code){
-  const lines=code.split('\n');
-  const ci=document.getElementById('codeInner');
-  const lg=document.getElementById('lineGutter');
-  ci.innerHTML='';lg.innerHTML='';
-  lines.forEach((l,i)=>{
-    const d=document.createElement('div');d.className='cl';
-    d.innerHTML=l===''?'\u200b':hl(l);ci.appendChild(d);
-    const n=document.createElement('div');n.className='lnum';
-    n.textContent=i+1;lg.appendChild(n);
+// ═══════════════════════════════════════
+// 12. ATTENUATION
+// ═══════════════════════════════════════
+let attenAF=null,attenT=0;
+function drawAttenFrame(t){
+  const x=clearCanvas('cAtten');
+  const W=700,H=200;
+  // Fibre
+  x.fillStyle='rgba(76,201,240,0.06)';
+  x.fillRect(80,85,550,30);
+  x.strokeStyle='#1e3050'; x.lineWidth=1;
+  [85,115].forEach(y=>{ x.beginPath(); x.moveTo(80,y); x.lineTo(630,y); x.stroke(); });
+  // Distance markers
+  [0,1,2,3,4,5].forEach(i=>{
+    const kx=80+i*110;
+    x.strokeStyle='#1e2240'; x.lineWidth=1;
+    x.beginPath(); x.moveTo(kx,120); x.lineTo(kx,130); x.stroke();
+    label(x,i+'km',kx,142,DIM,9);
+  });
+  // Signal decay — draw decaying sine
+  const progress=Math.min(t/120,1);
+  x.strokeStyle=CYAN; x.lineWidth=2;
+  x.beginPath();
+  for(let i=0;i<550*progress;i++){
+    const xi=80+i;
+    const decay=Math.exp(-i/550*2.5);
+    const yi=100+Math.sin(i*0.25)*18*decay;
+    i===0?x.moveTo(xi,yi):x.lineTo(xi,yi);
+  }
+  x.stroke();
+  if(t>20){
+    label(x,'P_in',90,80,CYAN,10);
+    arrow(x,90,82,90,84,CYAN,1);
+  }
+  if(t>90){
+    const endP=80+550*progress;
+    label(x,'P_out',endP-5,80,YELLOW,10);
+    // dB value
+    const km=((550*progress)/110).toFixed(1);
+    label(x,km+' km traveled — Signal weakening',350,168,PINK,11);
+    label(x,'Attenuation = 10/L × log₁₀(P_in/P_out)  dB/km',350,182,DIM,10);
+  }
+  label(x,'ATTENUATION — Signal Power Decays with Distance',350,20,BLUE,12);
+  // Legend
+  const causes=['Rayleigh Scattering','Absorption','Bending Losses'];
+  const colors=[RED,YELLOW,PINK];
+  causes.forEach((c,i)=>{
+    x.fillStyle=colors[i]; x.fillRect(530,35+i*18,10,10);
+    label(x,c,546,44+i*18,DIM,9,'left');
   });
 }
-function syncGutter(){
-  document.getElementById('lineGutter').scrollTop=
-  document.getElementById('codeScroll').scrollTop;
-}
-
-/* ════════════════════════════════════════
-   SCRATCH
-════════════════════════════════════════ */
-let scratchMode=false;
-function openScratch(){
-  scratchMode=true;
-  document.getElementById('editorWrap').style.display='none';
-  const se=document.getElementById('scratchEditor');
-  se.style.display='block';se.style.flex='1';se.style.minHeight='0';
-  if(!se.value.trim()){
-    se.value=`#include <stdio.h>\n\nint main()\n{\n    \n    return 0;\n}`;
-    const pos=se.value.indexOf('    \n');
-    se.selectionStart=se.selectionEnd=pos+4;
+function startAtten(){
+  if(attenAF) cancelAnimationFrame(attenAF);
+  attenT=0;
+  function loop(){
+    drawAttenFrame(attenT);
+    attenT++;
+    if(attenT<140) attenAF=requestAnimationFrame(loop);
   }
-  document.getElementById('fileTab').textContent='scratch.c';
-  document.getElementById('progSel').value='';
-  se.focus();
+  loop();
 }
-function openEditor(){
-  scratchMode=false;
-  document.getElementById('scratchEditor').style.display='none';
-  document.getElementById('editorWrap').style.display='flex';
-}
-
-/* Smart editor keys */
-document.getElementById('scratchEditor').addEventListener('keydown',function(e){
-  const ta=this,start=ta.selectionStart,end=ta.selectionEnd,val=ta.value;
-  if(e.key==='Tab'){
-    e.preventDefault();
-    ta.value=val.substring(0,start)+'    '+val.substring(end);
-    ta.selectionStart=ta.selectionEnd=start+4;return;
-  }
-  if(e.key==='Enter'){
-    e.preventDefault();
-    const ls=val.lastIndexOf('\n',start-1)+1;
-    const indent=val.substring(ls,start).match(/^(\s*)/)[1];
-    const cb=val.substring(0,start).trimEnd().slice(-1);
-    const ca=val[end]||'';
-    if(cb==='{' && ca==='}'){
-      const ex=indent+'    ';
-      const ins='\n'+ex+'\n'+indent;
-      ta.value=val.substring(0,start)+ins+val.substring(end);
-      ta.selectionStart=ta.selectionEnd=start+1+ex.length;
-    } else {
-      const ins='\n'+indent+(cb==='{'?'    ':'');
-      ta.value=val.substring(0,start)+ins+val.substring(end);
-      ta.selectionStart=ta.selectionEnd=start+ins.length;
-    }return;
-  }
-  const pairs={'{'  :'}','(':')',  '[':']','"':'"',"'":"'"};
-  if(pairs[e.key]){
-    e.preventDefault();
-    const cl=pairs[e.key];
-    if(start!==end){
-      const sel=val.substring(start,end);
-      ta.value=val.substring(0,start)+e.key+sel+cl+val.substring(end);
-      ta.selectionStart=start+1;ta.selectionEnd=end+1;
-    } else {
-      ta.value=val.substring(0,start)+e.key+cl+val.substring(end);
-      ta.selectionStart=ta.selectionEnd=start+1;
-    }return;
-  }
-  const closers=new Set(['}',')',']','"',"'"]);
-  if(closers.has(e.key)&&val[start]===e.key){e.preventDefault();ta.selectionStart=ta.selectionEnd=start+1;return;}
-  if(e.key==='Backspace'&&start===end&&start>0){
-    const ap={'{'  :'}','(':')','[':']','"':'"',"'":"'"};
-    if(ap[val[start-1]]===val[start]){
-      e.preventDefault();
-      ta.value=val.substring(0,start-1)+val.substring(start+1);
-      ta.selectionStart=ta.selectionEnd=start-1;
-    }
-  }
-});
-
-/* ════════════════════════════════════════
-   LOAD PROGRAM
-════════════════════════════════════════ */
-function loadProg(idx){
-  if(!idx)return;
-  openEditor();
-  cur=P[idx];
-  render(cur.code);
-  clearOutput();
-  document.getElementById('fileTab').textContent=cur.f;
-}
-
-/* ════════════════════════════════════════
-   RUN
-════════════════════════════════════════ */
-let running=false,timer=null;
-function runCode(){
-  if(running)return;
-  if(scratchMode){addOut({t:'i',s:'scratch.c — no output in scratch mode.'});switchTab('stdout');return;}
-  if(!cur){addOut({t:'o',s:'// No program loaded. Select one from the dropdown above.'});switchTab('stdout');return;}
-  running=true;
-  const btn=document.getElementById('runBtn');
-  btn.classList.add('running');btn.innerHTML='&#9632; Running...';
-  clearOutput();
-  switchTab('stdout');
-  setTimeout(()=>{
-    play(cur.out,0,()=>{
-      running=false;btn.classList.remove('running');btn.innerHTML='&#9654; Run';
-    });
-  },400);
-}
-function play(lines,i,done){
-  if(i>=lines.length){done();return;}
-  addOut(lines[i]);
-  timer=setTimeout(()=>play(lines,i+1,done),lines[i].t==='u'?190:lines[i].t==='i'?65:50);
-}
-function addOut(line){
-  const out=document.getElementById('pane-stdout');
-  const sp=document.createElement('span');sp.className='ol';
-  const s=esc(line.s);
-  if(line.t==='i')sp.innerHTML=`<span class="o-info">${s}</span>\n`;
-  else if(line.t==='p')sp.innerHTML=`<span class="o-prompt">${s}</span>`;
-  else if(line.t==='u')sp.innerHTML=`<span class="o-input">${s}</span>\n`;
-  else if(line.t==='e')sp.innerHTML=`<span class="o-err">${s}</span>\n`;
-  else sp.innerHTML=s+'\n';
-  out.appendChild(sp);out.scrollTop=out.scrollHeight;
-}
-function clearOutput(){
-  document.getElementById('pane-stdout').innerHTML='';
-  document.getElementById('pane-stderr').innerHTML='';
-}
-function stopCode(){
-  if(timer)clearTimeout(timer);running=false;
-  const btn=document.getElementById('runBtn');
-  btn.classList.remove('running');btn.innerHTML='&#9654; Run';
-  addOut({t:'e',s:'[Process terminated by user]'});
-}
-function doBeautify(){
-  if(!cur||scratchMode)return;
-  const ci=document.getElementById('codeInner');
-  ci.style.opacity='0';ci.style.transition='opacity .15s';
-  setTimeout(()=>{render(cur.code);ci.style.opacity='1';},160);
-}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-/* ════════════════════════════════════════
-   TAB SWITCHING
-════════════════════════════════════════ */
-function switchTab(name){
-  ['stdin','stdout','stderr'].forEach(t=>{
-    document.getElementById('pane-'+t).style.display= t===name&&name!=='stdin'?'block':'none';
-    document.getElementById('tab-btn-'+t).classList.toggle('active',t===name);
-  });
-  if(name==='stdin') document.getElementById('pane-stdin').style.display='flex';
-}
-
-/* ════════════════════════════════════════
-   RESIZE / TOGGLE PANEL
-════════════════════════════════════════ */
-const rz=document.getElementById('my-divider1');
-const bp=document.getElementById('bottom-component');
-let dr=false,sy=0,sh=0;
-rz.addEventListener('mousedown',e=>{
-  if(e.target.id==='toggleBtn')return;
-  dr=true;sy=e.clientY;sh=bp.offsetHeight;
-  document.body.style.userSelect='none';
-});
-window.addEventListener('mousemove',e=>{
-  if(!dr)return;
-  const ws=document.getElementById('top-component').parentElement;
-  const maxH=ws.offsetHeight-30;
-  const newH=Math.max(60,Math.min(maxH,sh+(sy-e.clientY)));
-  bp.style.height=newH+'px';bp.style.transition='none';
-  updateToggleBtn(newH,maxH);
-});
-window.addEventListener('mouseup',()=>{dr=false;document.body.style.userSelect='';});
-
-let expanded=false;
-const SMALL_H=230;
-function togglePanel(e){
-  e.stopPropagation();
-  const ws=document.getElementById('right-component');
-  const maxH=ws.offsetHeight-80;
-  bp.style.transition='height .3s cubic-bezier(.4,0,.2,1)';
-  if(!expanded){
-    bp.style.height=maxH+'px';
-    document.getElementById('toggleBtn').innerHTML='&#9660;';
-    expanded=true;
-  } else {
-    bp.style.height=SMALL_H+'px';
-    document.getElementById('toggleBtn').innerHTML='&#9650;';
-    expanded=false;
-  }
-}
-function togglePanel2(){
-  togglePanel({stopPropagation:()=>{}});
-}
-function togglePanelHide(){
-  bp.style.transition='height .25s ease';
-  if(bp.offsetHeight>40){
-    bp.dataset.prev=bp.offsetHeight;
-    bp.style.height='28px';
-    expanded=false;
-    document.getElementById('toggleBtn').innerHTML='&#9650;';
-  } else {
-    bp.style.height=(bp.dataset.prev||SMALL_H)+'px';
-  }
-}
-function updateToggleBtn(h,maxH){
-  const btn=document.getElementById('toggleBtn');
-  if(h>=maxH-10){expanded=true;btn.innerHTML='&#9660;';}
-  else{expanded=false;btn.innerHTML='&#9650;';}
-}
-
-/* ════════════════════════════════════════
-   SIDEBAR FOLD
-════════════════════════════════════════ */
-let sidebarOpen=true;
-function toggleSidebar(){
-  const sb=document.getElementById('left-component');
-  const btn=sb.querySelector('.fold-btn');
-  sidebarOpen=!sidebarOpen;
-  sb.style.transition='width .25s ease';
-  sb.style.width=sidebarOpen?'190px':'28px';
-  sb.querySelectorAll('.sidebar-logo-link,.sidebar-tagline,.sidebar-motto,.sidebar-nav,.sidebar-scratch-area,.sidebar-footer')
-    .forEach(el=>el.style.display=sidebarOpen?'':'none');
-  btn.innerHTML=sidebarOpen?'&#10094;':'&#10095;';
-}
-
-/* ════════════════════════════════════════
-   LOGIN
-════════════════════════════════════════ */
-function doLogin(){
-  const u=document.getElementById('loginUser').value.trim();
-  const p=document.getElementById('loginPass').value.trim();
-  const err=document.getElementById('loginErr');
-  if(u==='manas'&&p==='manas'){
-    const ov=document.getElementById('loginOverlay');
-    ov.classList.add('login-out');
-    setTimeout(()=>ov.style.display='none',440);
-  } else {
-    err.textContent='Invalid credentials. Please try again.';
-    ['loginUser','loginPass'].forEach(id=>{
-      const el=document.getElementById(id);
-      el.classList.add('shake');
-      setTimeout(()=>el.classList.remove('shake'),400);
-    });
-    document.getElementById('loginPass').value='';
-    document.getElementById('loginUser').focus();
-  }
-}
-document.getElementById('loginUser').focus();
-
-/* ════════════════════════════════════════
-   INIT
-════════════════════════════════════════ */
-loadProg(1);
-document.getElementById('progSel').value='1';
-switchTab('stdin');
+function resetAtten(){ if(attenAF) cancelAnimationFrame(attenAF); drawAttenFrame(0); }
+drawAttenFrame(0);
 </script>
 </body>
 </html>
